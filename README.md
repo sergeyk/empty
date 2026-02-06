@@ -1,3 +1,0 @@
-# empty
-
-An empty repository.
