@@ -77,14 +77,50 @@
   }
 
   /* ---------- plate & book ---------- */
+  const ART = 'art/';
+  const PLATE = {
+    valley: { no: 'I', cap: 'The Valley', wl: 34, place: 'The street', fb: 'valley', mk: { store: [62, 58, 'Store', 1], church: [74.5, 51, 'Church'], ferry: [64, 69, 'Ferry'], mill: [33, 48.5, 'Mill', 1], dam: [50, 39, 'The Works', 1] } },
+    valley_dusk: { no: 'I', cap: 'The Valley', wl: 34, place: 'The street', fb: 'valley', mk: { store: [66, 60, 'Store', 1], church: [73.5, 50.5, 'Church'], ferry: [57, 70, 'Ferry'], mill: [32.5, 48, 'Mill', 1], dam: [47.5, 38, 'The Works', 1] } },
+    store: { no: 'II', cap: 'The Store', wl: 10, place: 'The store', fb: 'store' },
+    store_in: { no: 'II', cap: 'The Store', wl: 9, wlt: 'PROPOSED WATER SURFACE · 58 FT ABOVE THIS FLOOR', place: 'The store', fb: 'store', dark: 1 },
+    church: { no: 'III', cap: 'The Churchyard', wl: 22, place: 'The churchyard', fb: 'church' },
+    ferry: { no: 'IV', cap: 'The Crossing', wl: 10, place: 'The crossing', fb: 'ferry' },
+    mill: { no: 'V', cap: 'The Mill', wl: 9, place: 'The mill', fb: 'mill' },
+    mill_in: { no: 'V', cap: 'The Mill', wl: 9, wlt: 'PROPOSED WATER SURFACE · 61 FT ABOVE THIS FLOOR', place: 'The mill', fb: 'mill', dark: 1 },
+    dam: { no: 'VI', cap: 'The Works', wl: 21, wlt: 'DESIGN WATER SURFACE · EL. 412', place: 'The works', fb: 'dam', dark: 1 },
+    removal: { no: 'VI', cap: 'The Works', wl: 0, place: 'The works', fb: 'dam' },
+    night: { no: 'VII', cap: 'The Lake', wl: 0, place: 'The lake', fb: 'night' }
+  };
+  const FACE = { HALLIE: 'hallie', WREN: 'wren', ODILE: 'odile', TARR: 'tarr', LYLE: 'lyle', 'THE MAN': 'lyle', DACE: 'dace', WHITLOW: 'whitlow' };
+  let artOK = true;
+  function preload() {
+    Object.keys(PLATE).concat(['lake_day']).forEach(k => { const i = new Image(); i.src = ART + k + '.jpg'; });
+    Object.values(FACE).forEach(k => { const i = new Image(); i.src = ART + 'p_' + k + '.jpg'; });
+    Object.keys(VOICES).forEach(k => { const i = new Image(); i.src = ART + 'v_' + k + '.jpg'; });
+  }
+  function plateHTML(id) {
+    const P = PLATE[id];
+    if (!artOK) return plateSVG(P.fb, S);
+    let h = `<div class="pin"><img class="art" src="${ART}${id}.jpg" alt="Watercolor: ${P.cap}" draggable="false">`;
+    if (P.wl) {
+      const y = P.wl * 10;
+      h += `<svg class="ov ${P.dark ? 'ov-dark' : ''}" viewBox="0 0 1500 1000" preserveAspectRatio="none" aria-hidden="true"><line x1="30" x2="1470" y1="${y}" y2="${y}" class="wl-l"/><path d="M52 ${y} l-13 -20 h26 z" class="wl-m"/><text x="1462" y="${y - 14}" text-anchor="end" class="wl-t">${P.wlt || 'PROPOSED WATER SURFACE · EL. 412'}</text></svg>`;
+    }
+    if (P.mk) Object.keys(P.mk).forEach(k => { if (k === 'mill' && !S.f.knowMill) return; const m = P.mk[k]; h += `<button class="mk${m[3] ? ' lf' : ''}" data-loc="${k}" aria-label="${m[2]}" style="left:${m[0]}%;top:${m[1]}%"><i></i><span>${m[2]}</span></button>`; });
+    h += `<span class="cap">Plate ${P.no} · ${P.cap}</span></div>`;
+    return h;
+  }
   function setPlate(id) {
-    const key = id + '|' + S.t + '|' + (S.f.knowMill ? 1 : 0);
+    const key = id + '|' + (S.f.knowMill ? 1 : 0) + '|' + artOK;
     if (key === curPlateKey) return;
     const fig = $('#plate'), holder = $('#plate-svg');
-    const first = !curPlateKey; curPlateKey = key; curPlate = id;
-    const put = () => { holder.innerHTML = plateSVG(id, S); fig.classList.remove('swap'); };
-    if (first) put(); else { fig.classList.add('swap'); setTimeout(put, 460); }
-    setAmb(id);
+    const first = !curPlateKey; const prev = curPlate; curPlateKey = key; curPlate = id;
+    const put = () => {
+      holder.innerHTML = plateHTML(id); fig.classList.remove('swap');
+      const im = holder.querySelector('img.art'); if (im) im.onerror = () => { artOK = false; curPlateKey = ''; setPlate(id); };
+    };
+    if (first || prev === id) put(); else { fig.classList.add('swap'); setTimeout(put, 460); }
+    setAmb(PLATE[id].fb);
   }
   function bookHTML() {
     const n = S.book.filter(e => !e.struck).length;
@@ -116,8 +152,8 @@
   function lineEl(L) {
     if (!L) return null;
     if (L.k === 'n') return el('p', 'ln-n', esc(L.t));
-    if (L.k === 'p') return el('p', 'ln-p', `<span class="who">${esc(L.who)}</span>${esc(L.t)}`);
-    if (L.k === 'v') { if (S.v[L.v] < L.min) return null; return el('div', 'ln-v v-' + L.v, `<span class="who">${esc(VOICES[L.v].name)}</span><span class="txt">${esc(L.t)}</span>`); }
+    if (L.k === 'p') { const f = FACE[L.who]; const d = el('div', 'ln-p' + (f && artOK ? ' has-face' : '')); d.innerHTML = (f && artOK ? `<img class="face" src="${ART}p_${f}.jpg" alt="">` : '') + `<p><span class="who">${esc(L.who)}</span>${esc(L.t)}</p>`; return d; }
+    if (L.k === 'v') { if (S.v[L.v] < L.min) return null; return el('div', 'ln-v v-' + L.v, (artOK ? `<img class="emb" src="${ART}v_${L.v}.jpg" alt="">` : '') + `<p><span class="who">${esc(VOICES[L.v].name)}</span><span class="txt">${esc(L.t)}</span></p>`); }
     if (L.k === 'form') return el('div', 'ln-form', esc(L.t));
     if (L.k === 'note') return el('p', 'ln-note', esc(L.t));
     if (L.k === 'entry') { const e = S.book.find(e => e.key === L.key); if (!e) return null; blip('pen'); return el('div', 'ln-entry', `<span class="nm"><span class="wr">${esc(e.name)}<small>${esc(e.note)}</small></span></span><span class="ag"><span class="wr">${e.age}</span></span>`); }
@@ -125,7 +161,10 @@
   }
   function trim() { const l = log(); while (l.children.length > 140) l.removeChild(l.firstChild); }
 
+  let lastPlace = '';
   function render(nd) {
+    const place = PLATE[nd.plate].place;
+    if (place !== lastPlace && !nd.fin) { if (lastPlace || S.node !== 'grade') log().appendChild(el('div', 'scene', `<span>${esc(place)} · ${esc(TIMES[Math.min(S.t, 5)])}</span>`)); lastPlace = place; }
     setPlate(nd.plate); refresh();
     if (nd.fin) return fin();
     const beats = nd.beats.map(b => b.map(lineEl).filter(Boolean)).filter(b => b.length);
@@ -162,11 +201,11 @@
         if (tr != null) { if (ch.red || tr === 'won') return; if (S.v[ch.v] <= tr) spent = true; }
       }
       const li = el('li', spent ? 'spent' : ''); const b = el('button');
-      let h = `<span class="${o.act ? 'o-act' : ''}">${o.vc ? `<span class="who v-${o.vc}" style="font-style:normal">${esc(o.t)}</span>` : esc(o.t)}${o.tag ? `<span class="o-tag">${esc(o.tag)}</span>` : ''}`;
+      let h = `<span class="${o.act ? 'o-act' : ''}">${o.vc ? `${artOK ? `<img class="emb" src="${ART}v_${o.vc}.jpg" alt="">` : ''}<span class="who v-${o.vc}" style="font-style:normal">${esc(o.t)}</span>` : esc(o.t)}${o.tag ? `<span class="o-tag">${esc(o.tag)}</span>` : ''}`;
       if (o.sub) h += `<span class="o-sub">${esc(o.sub)}</span>`;
       if (ch) {
         h += `<span class="o-chk v-${ch.v}">${esc(VOICES[ch.v].name)} ${S.v[ch.v]} · ${diffWord(ch.dc)} ${ch.dc} · ${spent ? 'tried. A louder voice might try again' : odds(ch) + ' in 100'}${ch.red && !spent ? ' · <span class="red">one throw only</span>' : ''}</span>`;
-        mods(ch).forEach(m => { h += `<span class="o-mod">+${m[1]} ${esc(m[0])}</span>`; });
+        mods(ch).forEach(m => { h += `<span class="o-mod">${m[1] > 0 ? '+' : '\u2212'}${Math.abs(m[1])} ${esc(m[0])}</span>`; });
       }
       h += '</span>';
       b.innerHTML = h;
@@ -198,7 +237,7 @@
     const iv = setInterval(() => { dice[0].innerHTML = pips(1 + Math.floor(Math.random() * 6)); dice[1].innerHTML = pips(1 + Math.floor(Math.random() * 6)); }, 90);
     setTimeout(() => {
       clearInterval(iv); box.classList.remove('rolling'); dice[0].innerHTML = pips(a); dice[1].innerHTML = pips(b);
-      box.querySelector('.sum').innerHTML = `<b>${esc(VOICES[ch.v].name)}</b> ${lvl}${mb ? ' + ' + mb : ''} + dice ${a + b} = <b>${tot}</b><br>against ${ch.dc}`;
+      box.querySelector('.sum').innerHTML = `<b>${esc(VOICES[ch.v].name)}</b> ${lvl}${mb ? (mb > 0 ? ' + ' : ' \u2212 ') + Math.abs(mb) : ''} + dice ${a + b} = <b>${tot}</b><br>against ${ch.dc}`;
       const r = box.querySelector('.res'); r.className = 'res ' + (ok ? 'pass' : 'fail');
       r.textContent = a + b === 12 ? 'Two sixes. It holds.' : a + b === 2 ? 'Two ones. It fails.' : ok ? 'It holds.' : 'It fails.';
       setTimeout(() => { busy = false; go(ok ? ch.pass : ch.fail, false); }, 900);
@@ -215,7 +254,7 @@
   function fin() {
     clearSave();
     const n = S.book.filter(e => !e.struck).length;
-    const d = el('div', 'fin', `<hr class="sep"><h3>Tenmile</h3><p>${n} entered · $${n * 40} paid · valley certified vacant</p><p>The people of the valley could have fared otherwise. The book was yours.</p>`);
+    const d = el('div', 'fin', `${artOK ? `<img class="fin-art" src="${ART}lake_day.jpg" alt="Watercolor: the lake by day">` : '<hr class="sep">'}<h3>Tenmile</h3><p>${n} entered · $${n * 40} paid · valley certified vacant</p><p>The people of the valley could have fared otherwise. The book was yours.</p>`);
     const b = el('button', '', 'Come down the grade again'); b.onclick = () => begin(true); d.appendChild(b);
     log().appendChild(d); scrollToNew(d);
   }
@@ -228,7 +267,7 @@
   }
   function voicesSheet() {
     let h = '<h2>The Voices</h2>';
-    Object.keys(VOICES).forEach(k => { h += `<div class="vrow v-${k}"><span class="nm">${VOICES[k].name}</span><span class="pips">${'●'.repeat(S.v[k])}${'○'.repeat(Math.max(0, 5 - S.v[k]))}</span><span class="gl">${esc(VOICES[k].gloss)}</span></div>`; });
+    Object.keys(VOICES).forEach(k => { h += `<div class="vrow v-${k}"><span class="nm">${artOK ? `<img class="emb" src="${ART}v_${k}.jpg" alt="">` : ''}${VOICES[k].name}</span><span class="pips">${'●'.repeat(S.v[k])}${'○'.repeat(Math.max(0, 5 - S.v[k]))}</span><span class="gl">${esc(VOICES[k].gloss)}</span></div>`; });
     h += `<div class="howto" style="margin-top:14px"><p>When you lean on a voice it throws two dice and adds its number. Meet the figure and it holds. Two sixes always hold. Two ones never do.</p><p>Some throws can be tried again when the voice has grown. Some can be thrown only once.</p></div>`;
     sheet(h);
   }
@@ -244,10 +283,11 @@
   /* ---------- boot ---------- */
   function begin(newGame) {
     if (newGame || !S) { S = fresh(); clearSave(); }
-    log().innerHTML = ''; scroller().scrollTop = 0; curPlateKey = ''; busy = false;
-    const t = $('#title'); t.classList.add('gone'); setTimeout(() => { t.hidden = true; t.querySelector('.tplate').innerHTML = ''; }, 950);
+    log().innerHTML = ''; scroller().scrollTop = 0; curPlateKey = ''; busy = false; lastPlace = '';
+    const t = $('#title'); t.classList.add('gone'); setTimeout(() => { t.hidden = true; if (!t.querySelector('.tplate img')) t.querySelector('.tplate').innerHTML = ''; }, 950);
     $('#plate-svg').innerHTML = '';
-    go(S.node);
+    if (!STORY[S.node] || S.node[0] === '_') S.node = S.t >= 5 ? 'dam' : 'hub';
+    try { go(S.node); } catch (err) { S = fresh(); clearSave(); log().innerHTML = ''; curPlateKey = ''; lastPlace = ''; go(S.node); }
   }
   function start(hot) {
     let sOn = true; try { sOn = localStorage.getItem('tenmile.sound') !== '0'; } catch (e) { }
@@ -257,12 +297,14 @@
     $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') e.target.hidden = true; });
     $('#plate').addEventListener('click', e => {
       const m = e.target.closest && e.target.closest('.mk'); if (!m || busy || !S || S.node !== 'hub') return;
-      const map = { store: /store/i, church: /churchyard/i, ferry: /^The ferry/i, dam: /works/i };
+      const map = { store: /store/i, church: /churchyard/i, ferry: /^The ferry/i, dam: /works/i, mill: /ferry/i };
       const loc = m.getAttribute('data-loc'); const btns = [...document.querySelectorAll('#log .opts:last-of-type button')];
       const b = btns.find(b => map[loc] && map[loc].test(b.textContent)); if (b) b.click();
     });
     const saved = (hot && hot.S) || load();
-    $('#title .tplate').innerHTML = plateSVG('valley', { t: 0, f: { bare: 1 } });
+    const tp = $('#title .tplate'); const ti = new Image(); ti.alt = ''; ti.onload = () => { $('#title').classList.add('painted'); preload(); };
+    ti.onerror = () => { artOK = false; tp.innerHTML = plateSVG('valley', { t: 0, f: { bare: 1 } }); };
+    ti.src = ART + 'valley.jpg'; tp.appendChild(ti);
     const bn = $('#t-new'), bc = $('#t-cont');
     if (saved && saved.node !== 'grade' && saved.node !== 'fin') { bc.hidden = false; bc.onclick = () => { S = saved; audioStart(); begin(false); }; bn.textContent = 'Begin again'; bn.classList.remove('primary'); bc.classList.add('primary'); }
     bn.onclick = () => { audioStart(); begin(true); };
