@@ -88,14 +88,16 @@
     mill: { no: 'V', cap: 'The Mill', wl: 9, place: 'The mill', fb: 'mill' },
     mill_in: { no: 'V', cap: 'The Mill', wl: 9, wlt: 'PROPOSED WATER SURFACE · 61 FT ABOVE THIS FLOOR', place: 'The mill', fb: 'mill', dark: 1 },
     dam: { no: 'VI', cap: 'The Works', wl: 21, wlt: 'DESIGN WATER SURFACE · EL. 412', place: 'The works', fb: 'dam', dark: 1 },
+    works: { no: 'VI', cap: 'The Works', wl: 16, wlt: 'DESIGN WATER SURFACE · EL. 412', place: 'The works', fb: 'dam', dark: 1 },
+    purdy_in: { no: 'VIII', cap: 'An Empty House', wl: 9, wlt: 'PROPOSED WATER SURFACE · 55 FT ABOVE THIS FLOOR', place: 'The Purdy house', fb: 'store', dark: 1 },
     removal: { no: 'VI', cap: 'The Works', wl: 0, place: 'The works', fb: 'dam' },
     night: { no: 'VII', cap: 'The Lake', wl: 0, place: 'The lake', fb: 'night' }
   };
-  const FACE = { HALLIE: 'hallie', WREN: 'wren', ODILE: 'odile', TARR: 'tarr', LYLE: 'lyle', 'THE MAN': 'lyle', DACE: 'dace', WHITLOW: 'whitlow' };
+  const FACE = { HALLIE: 'hallie', WREN: 'wren', ODILE: 'odile', TARR: 'tarr', LYLE: 'lyle', 'THE MAN': 'lyle', DACE: 'dace', WHITLOW: 'whitlow', CARL: 'carl' };
   let artOK = true;
   function preload() {
     Object.keys(PLATE).concat(['lake_day']).forEach(k => { const i = new Image(); i.src = ART + k + '.jpg'; });
-    Object.values(FACE).forEach(k => { const i = new Image(); i.src = ART + 'p_' + k + '.jpg'; });
+    [...new Set(Object.values(FACE))].forEach(k => { const i = new Image(); i.src = ART + 'p_' + k + '.jpg'; });
     Object.keys(VOICES).forEach(k => { const i = new Image(); i.src = ART + 'v_' + k + '.jpg'; });
   }
   function plateHTML(id) {
@@ -127,7 +129,7 @@
     let rows = S.book.map((e, i) => `<li class="${e.struck ? 'struck' : ''}"><span class="no">${i + 1}</span><span class="nm">${esc(e.name)}<small>${esc(e.note)}</small></span><span class="ag">${e.age}</span></li>`).join('');
     for (let i = S.book.length; i < Math.max(7, S.book.length + 1); i++) rows += `<li class="blank"><span class="no">${i + 1}</span><span class="nm"></span><span class="ag"></span></li>`;
     return `<div class="book-inner"><div class="book-head"><span>Schedule C · Souls</span><span>Name</span><span>Age</span></div><ol class="book-rows">${rows}</ol>
-    <div class="book-foot"><span>Entered: <b>${n}</b></span><span>Allowance: <b>$${n * 40}</b></span><span>Your voucher: <b>${S.money ? '$30' : 'given'}</b></span></div></div>`;
+    <div class="book-foot"><span>Entered: <b>${n}</b></span><span>Allowance: <b>$${n * 40}</b></span><span>Your voucher: <b>${S.money ? '$30' : 'given'}</b></span>${S.f.muleFeed ? '<span>Stock book: <b>one mule, feed at Corley</b></span>' : ''}${S.f.tarrAddress ? '<span>On the Sabra receipt: <b>R. Bell, behind the forge</b></span>' : ''}</div></div>`;
   }
   function refresh() {
     $('#book').innerHTML = bookHTML();
@@ -252,9 +254,12 @@
   }
 
   function fin() {
-    clearSave();
     const n = S.book.filter(e => !e.struck).length;
-    const d = el('div', 'fin', `${artOK ? `<img class="fin-art" src="${ART}lake_day.jpg" alt="Watercolor: the lake by day">` : '<hr class="sep">'}<h3>Tenmile</h3><p>${n} entered · $${n * 40} paid · valley certified vacant</p><p>The people of the valley could have fared otherwise. The book was yours.</p>`);
+    const d = el('div', 'fin', `${artOK ? `<img class="fin-art" src="${ART}lake_day.jpg" alt="Watercolor: the lake by day">` : '<hr class="sep">'}<h3>Tenmile</h3><p>${n} entered · $${n * 40} paid · valley certified vacant</p>`);
+    if (!S.f.returns) {
+      const rb = el('button', '', 'Read the later returns'); rb.onclick = () => { d.hidden = true; go('after'); }; d.appendChild(rb);
+      d.appendChild(el('p', '', 'What became of them, so far as it was written down.'));
+    } else { d.appendChild(el('p', '', 'The people of the valley could have fared otherwise. The book was yours.')); clearSave(); }
     const b = el('button', '', 'Come down the grade again'); b.onclick = () => begin(true); d.appendChild(b);
     log().appendChild(d); scrollToNew(d);
   }
@@ -306,7 +311,7 @@
     ti.onerror = () => { artOK = false; tp.innerHTML = plateSVG('valley', { t: 0, f: { bare: 1 } }); };
     ti.src = ART + 'valley.jpg'; tp.appendChild(ti);
     const bn = $('#t-new'), bc = $('#t-cont');
-    if (saved && saved.node !== 'grade' && saved.node !== 'fin') { bc.hidden = false; bc.onclick = () => { S = saved; audioStart(); begin(false); }; bn.textContent = 'Begin again'; bn.classList.remove('primary'); bc.classList.add('primary'); }
+    if (saved && saved.node !== 'grade' && !(saved.node === 'fin' && saved.f && saved.f.returns)) { bc.hidden = false; bc.onclick = () => { S = saved; audioStart(); begin(false); }; bn.textContent = 'Begin again'; bn.classList.remove('primary'); bc.classList.add('primary'); }
     bn.onclick = () => { audioStart(); begin(true); };
     document.addEventListener('visibilitychange', () => { if (!A.ctx) return; if (document.hidden) A.ctx.suspend(); else if (A.on) A.ctx.resume(); });
     window.__tenmile = { get S() { return S; }, go };
