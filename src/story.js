@@ -26,49 +26,71 @@ const count = S => S.book.filter(e => !e.struck).length;
 
 const STORY = {
 
-  /* ---------------- THE GRADE ---------------- */
+  /* ---------------- THE OPENING ---------------- */
   grade: S => ({
-    plate: 'valley',
+    plate: 'store',
     beats: [[
-      N(`You come down the grade at first light leading the mule. The road is cut into the hill and below it the valley lies in its own shadow with the river in the floor of it thin and bright as wire.`),
-      N(`At the foot of the valley where the hills close stands the dam. It is white and it is new and nothing else in that country is either.`),
-      N(`The town is called Tenmile. Eleven roofs and a church. Smoke from one chimney.`)
-    ], [
-      N(`In the saddlebag is a ledger of the Commission and a bottle of ink and a voucher for thirty dollars which is your wage. The instructions are pasted inside the cover. You have read them in four other valleys.`),
-      FORM(`SCHEDULE C. ENUMERATION OF SOULS.\n\n1. The Enumerator shall enter every person resident in the valley on the day of the count.\n2. Each person entered is allowed forty dollars for removal.\n3. Each person entered shall be removed above the waterline by the constabulary before the gates are closed.\n4. A person not entered is not resident. The Commission has no concern with him.\n5. The gates close at dusk.`)
+      N(`You come down the grade at first light leading the mule. The valley lies in its own shadow with the river in the floor of it thin and bright as wire. At the foot of it stands the dam, white and new, and nothing else in that country is either.`),
+      N(`The town is called Tenmile. Eleven roofs and a church and smoke from one chimney. The doors of the houses stand open on the street and the rooms behind them are bare to the walls. Somebody has swept them.`),
+      N(`The smoke is from a store. On the gallery a girl of nine or ten sits on a bench with an open tin of peaches in her lap, eating them with her fingers. She watches you tie the mule.`),
+      P('WREN', `Are you the man that counts.`)
     ]],
-    opts: [{ t: 'Close the book.', act: 1, go: 'grade2' }]
+    opts: [
+      { t: 'I am. Every soul resident on the day of the count.', do: S => { S.v.ledger += 2; S.f.pick1 = 'ledger'; }, go: 'open1' },
+      { t: 'Who told you a man was coming.', do: S => { S.v.dog += 2; S.f.pick1 = 'dog'; }, go: 'open1' },
+      { t: 'Say nothing yet. Listen to the town.', act: 1, do: S => { S.v.ear += 2; S.f.pick1 = 'ear'; }, go: 'open1' }
+    ]
   }),
-  grade2: S => ({
-    plate: 'valley',
-    beats: [[
-      N(`The mule stops in the road and will not be led. You stand with it. There is no wind yet. In the quiet you can hear them start up, the way they do when there is work ahead and nobody by.`),
-      { k: 'v', v: 'ledger', min: 0, t: `Eleven roofs. One smoke. Say five souls, seven at the outside. Two hundred dollars to two hundred eighty. We will know by noon.` },
-      { k: 'v', v: 'hand', min: 0, t: `The mule's off hind shoe is loose. You felt it a mile back and did nothing.` },
-      { k: 'v', v: 'ear', min: 0, t: `No dogs barking. A town with no dogs has left already.` },
-      { k: 'v', v: 'dog', min: 0, t: `Somebody down there is watching you. I dont know who. I know it the way you know rain.` },
-      { k: 'v', v: 'preacher', min: 0, t: `You carry the book of the living, brother. Walk like it.` },
-      { k: 'v', v: 'river', min: 0, t: `I was here before the road. I will be here over it.` }
-    ], [
-      N(`Six of them. You have never been able to hear six at once. Two of them you trust more than the rest.`),
-      NOTE(`Choose the first. A trusted voice speaks up more often and wins more of its throws.`)
-    ]],
-    opts: Object.keys(VOICES).map(k => ({ t: VOICES[k].name + '.', sub: VOICES[k].gloss, vc: k, silent: 1, do: S => { S.v[k] += 2; S.f.pick1 = k; }, go: 'grade3' }))
-  }),
-  grade3: S => ({
-    plate: 'valley',
-    beats: [[NOTE(`${VOICES[S.f.pick1].name} is with you. Choose the second.`)]],
-    opts: Object.keys(VOICES).filter(k => k !== S.f.pick1).map(k => ({ t: VOICES[k].name + '.', sub: VOICES[k].gloss, vc: k, silent: 1, do: S => { S.v[k] += 2; S.f.pick2 = k; }, go: 'grade4' }))
-  }),
-  grade4: S => ({
-    plate: 'valley',
-    beats: [[
-      NOTE(`${VOICES[S.f.pick1].name} and ${VOICES[S.f.pick2].name}. The others have not gone anywhere.`),
-      N(`The mule goes on when it is ready. You go with it.`),
-      N(`Tenmile is one street. The doors of the houses stand open and the rooms behind them are bare to the walls. Somebody has swept them.`)
-    ]],
-    opts: [{ t: 'Walk in.', act: 1, go: 'hub' }]
-  }),
+  open1: S => {
+    const k = S.f.pick1;
+    const L = k === 'ledger' ? [
+      V('ledger', 0, `Eleven roofs. One smoke. Say five souls, seven at the outside. Two hundred dollars to two hundred eighty. We will know by dusk.`),
+      P('WREN', `Granny Oake said a man would come and count us and then they'd let the water in. She said be civil.`)
+    ] : k === 'dog' ? [
+      P('WREN', `Granny Oake. She said a man would come and count us and then they'd let the water in. She said be civil.`),
+      V('dog', 0, `It's not her that has been watching you since the grade. Somebody has. I know it the way you know rain.`)
+    ] : [
+      N(`You stand and listen. No hens. No dogs. A stove ticking somewhere inside and a spoon going round a tin.`),
+      V('ear', 0, `A town with no dogs has left already.`),
+      N(`You tell her you are.`),
+      P('WREN', `Granny Oake said a man would come and count us and then they'd let the water in. She said be civil.`)
+    ];
+    return {
+      plate: 'store',
+      beats: [L.concat([
+        NOTE(`${VOICES[k].name} is one of six voices you carry. The ones you lean on speak up more and win more of their throws.`),
+        N(`She looks at the mule.`),
+        P('WREN', `Does he count.`)
+      ])],
+      opts: [
+        { t: 'He has no soul to enter. The book is for souls.', do: S => { S.v.preacher += 2; S.f.pick2 = 'preacher'; }, go: 'open2' },
+        { t: 'Ask him yourself. Mind the off hind foot.', do: S => { S.v.hand += 2; S.f.pick2 = 'hand'; }, go: 'open2' },
+        { t: 'The river doesnt count either, and it has lived here longest.', do: S => { S.v.river += 2; S.f.pick2 = 'river'; }, go: 'open2' }
+      ]
+    };
+  },
+  open2: S => {
+    S.f.metWren = 1;
+    const k = S.f.pick2;
+    const L = k === 'preacher' ? [
+      P('WREN', `Who says.`),
+      N(`The Commission, you tell her.`),
+      P('WREN', `Did they ask a mule.`),
+      V('preacher', 0, `You carry the book of the living, brother. Do not be catechised by a child with a peach tin.`)
+    ] : k === 'hand' ? [
+      N(`She gets down off the bench and asks him. The mule looks at the dam.`),
+      P('WREN', `He dont know either.`),
+      V('hand', 0, `That off hind shoe is loose. You felt it a mile back and did nothing.`)
+    ] : [
+      P('WREN', `The river's getting all the houses. It ought to count if it's getting the houses.`),
+      V('river', 0, `I was here before the road. I will be here over it. I am not getting anything.`)
+    ];
+    return {
+      plate: 'store',
+      beats: [L.concat([NOTE(`${VOICES[S.f.pick1].name} and ${VOICES[k].name} are the two you lean on. Four more are in there. Tap Voices to meet them.`)])],
+      opts: [{ t: 'Go in.', act: 1, go: 'store_in' }]
+    };
+  },
 
   /* ---------------- THE STREET (hub) ---------------- */
   hub: S => {
@@ -76,7 +98,7 @@ const STORY = {
     const o = [];
     const done = k => S.f['done_' + k];
     const chGo = done('church') ? 'church_back' : (S.f.metOdile ? 'church_return' : 'church');
-    o.push({ t: done('store') ? 'The store. Hallie Oake.' : 'The store, where the smoke is.', act: 1, go: done('store') ? 'store_back' : (S.f.metWren ? 'store_in' : 'store_porch'), tag: done('store') ? 'counted' : '' });
+    o.push({ t: done('store') ? 'The store. Hallie Oake.' : 'The store, where the smoke is.', act: 1, go: done('store') ? 'store_back' : 'store_in', tag: done('store') ? 'counted' : '' });
     if (S.f.told || done('store')) {
       o.push({ t: 'The churchyard, on the rise.', act: 1, go: chGo, tag: done('church') ? 'settled' : (S.f.metOdile ? 'not settled' : '') });
       o.push({ t: 'The ferry.', act: 1, go: done('ferry') ? 'ferry_back' : 'ferry', tag: done('ferry') ? 'settled' : '' });
@@ -85,7 +107,7 @@ const STORY = {
     if (done('store') && !S.f.purdy) o.push({ t: 'Walk into one of the empty houses.', act: 1, go: 'purdy' });
     if (S.f.told || done('store')) o.push({ t: S.f.worksSeen ? 'Go up to the works.' : 'Go up to the works and see them.', act: 1, go: S.f.worksSeen ? 'works_choices' : 'works_visit' });
     const lines = [];
-    if (!S.f.hubSeen) { S.f.hubSeen = 1; lines.push(N(`You stand in the street with the mule. There is the store with its one smoke. Past the last house the ground rises to a church. Below the town the river.`), V('ledger', 0, `The gates close at dusk and dusk is a long way off. There is time to see every soul in this valley. See every one.`)); }
+    if (!S.f.hubSeen) { S.f.hubSeen = 1; lines.push(N(`You stand in the street with the mule. Behind you the store with its one smoke. Past the last house the ground rises to a church. Below the town the river, and at the foot of the valley the works.`), V('ledger', 0, `The gates close at dusk and dusk is a long way off. There is time to see every soul in this valley. See every one.`)); }
     else {
       const t = ['', `The sun is on the east wall of the valley and the street is still in shade.`, `Noon. The shadows have gone in under things.`, `The light has crossed the river. The dam throws its shadow up the valley now, a mile long.`, `The dam's shadow has reached the first houses.`, `The light is going.`][Math.min(S.t, 5)];
       lines.push(N(`The street. ${t}`));
@@ -159,41 +181,16 @@ const STORY = {
   }),
 
   /* ---------------- THE STORE ---------------- */
-  store_porch: S => ({
-    plate: 'store',
-    beats: [[
-      N(`The store has a gallery and a bench. On the bench sits a girl of nine or ten with an open tin of peaches in her lap. She is eating them with her fingers. She watches you tie the mule.`),
-      P('WREN', `Are you the man that counts.`)
-    ]],
-    opts: [{ t: 'I am.', go: 'store_porch2' }, { t: 'Who says a man is coming.', go: 'store_porch2' }]
-  }),
-  store_porch2: S => {
-    S.f.metWren = 1;
-    return {
-      plate: 'store',
-      beats: [[
-        P('WREN', `Granny Oake said a man would come and count us and then they'd let the water in. She said be civil.`),
-        N(`She looks at the mule.`),
-        P('WREN', `Does he count.`)
-      ]],
-      opts: [
-        { t: `He's from outside the valley. He doesnt count.`, go: 'store_mule_a' },
-        { t: `Mules arent souls. It's in the instructions.`, go: 'store_mule_b' },
-        { t: `I'll ask him.`, go: 'store_mule_c' }
-      ]
-    };
-  },
-  store_mule_a: S => ({ plate: 'store', beats: [[P('WREN', `He's in it now.`), N(`You have no answer to that. You go in.`)]], opts: [{ t: 'Go in.', act: 1, go: 'store_in' }] }),
-  store_mule_b: S => ({ plate: 'store', beats: [[P('WREN', `Who wrote the instructions.`), N(`The Commission, you tell her.`), P('WREN', `Did they ask a mule.`)]], opts: [{ t: 'Go in.', act: 1, go: 'store_in' }] }),
-  store_mule_c: S => ({ plate: 'store', beats: [[N(`You look at the mule. The mule looks at the dam.`), P('WREN', `He dont know either.`)]], opts: [{ t: 'Go in.', act: 1, go: 'store_in' }] }),
-
   store_in: S => ({
     plate: 'store_in',
     beats: [[
       N(`Inside the shelves are near bare. A woman stands on a crate taking down the last of the lamp chimneys and wrapping each one in newspaper. She doesnt turn around.`),
       P('HALLIE', `Coffee's on the stove. I aint selling it. I quit selling Tuesday. Take what you want, there's not much left that's worth the carrying.`),
       V('hand', 2, `Tin cup on a nail by the stove. The coffee has been boiled twice. Drink it anyway.`),
-      N(`You set the ledger on the counter and open it and draw the cork from the ink. She hears the cork and comes down off the crate.`),
+      N(`You set the ledger on the counter and open it. The instructions are pasted inside the cover. You have read them in four other valleys. Tucked in the back is a voucher for thirty dollars which is your wage.`),
+      FORM(`SCHEDULE C. ENUMERATION OF SOULS.\n\n1. The Enumerator shall enter every person resident in the valley on the day of the count.\n2. Each person entered is allowed forty dollars for removal.\n3. Each person entered shall be removed above the waterline by the constabulary before the gates are closed.\n4. A person not entered is not resident. The Commission has no concern with him.\n5. The gates close at dusk.`)
+    ], [
+      N(`You draw the cork from the ink. She hears the cork and comes down off the crate.`),
       P('HALLIE', `Hallie Oake. Sixty-one. Born in that back room and I'd as soon you wrote that too but I dont guess there's a column for it.`)
     ]],
     opts: [{ t: 'Write her down.', act: 1, do: S => write(S, 'hallie', 'Hallie Oake', 61, 'storekeeper'), go: 'store_in2' }]
