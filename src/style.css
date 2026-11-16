@@ -8,6 +8,7 @@
   --ink-faint: #76817f;
   --rule-blue: #7d9db6;
   --rule-red: #b24a5a;
+  --hand-ink: #1b2f55;
   --cyan-deep: #0b2545;
   --cyan-pale: #dbe8ef;
   --v-ledger: #1f4f7d;
@@ -22,6 +23,10 @@
   --f-hand: 'Cedarville Cursive', 'Snell Roundhand', 'Apple Chancery', cursive;
   color-scheme: light;
 }
+
+/* night ledger: the same book by lamplight */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #121a24; --paper-2: #18222f; --paper-3: #2a3746; --ink: #dde2d4; --ink-soft: #a4aeab; --ink-faint: #74818a; --rule-blue: #3d5d79; --rule-red: #a8505f; --hand-ink: #bcd0ec; --v-ledger: #82b3e3; --v-hand: #d6ad55; --v-ear: #72c29b; --v-dog: #e88585; --v-preacher: #bc9fe3; --v-river: #60c6cf; color-scheme: dark; } }
+:root[data-theme="dark"] { --paper: #121a24; --paper-2: #18222f; --paper-3: #2a3746; --ink: #dde2d4; --ink-soft: #a4aeab; --ink-faint: #74818a; --rule-blue: #3d5d79; --rule-red: #a8505f; --hand-ink: #bcd0ec; --v-ledger: #82b3e3; --v-hand: #d6ad55; --v-ear: #72c29b; --v-dog: #e88585; --v-preacher: #bc9fe3; --v-river: #60c6cf; color-scheme: dark; }
 html, body { height: 100%; }
 body { background: var(--cyan-deep); color: var(--ink); font-family: var(--f-body); font-size: 16px; overflow: hidden; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; touch-action: manipulation; }
@@ -64,9 +69,9 @@ button:focus-visible { outline: 2px solid var(--rule-red); outline-offset: 2px; 
 .book-rows { list-style: none; margin: 0; padding: 0; }
 .book-rows li { display: grid; grid-template-columns: 1.6em 1fr auto; gap: 8px; align-items: baseline; min-height: 40px; border-bottom: 1px solid var(--rule-blue); padding: 6px 2px 0 0; }
 .book-rows .no { font-family: var(--f-type); font-size: .7rem; color: var(--ink-faint); }
-.book-rows .nm { font-family: var(--f-hand); font-size: 1.22rem; line-height: 1.15; color: #1b2f55; min-width: 0; }
+.book-rows .nm { font-family: var(--f-hand); font-size: 1.22rem; line-height: 1.15; color: var(--hand-ink); min-width: 0; }
 .book-rows .nm small { display: block; font-size: .8rem; opacity: .75; }
-.book-rows .ag { font-family: var(--f-hand); font-size: 1.15rem; color: #1b2f55; }
+.book-rows .ag { font-family: var(--f-hand); font-size: 1.15rem; color: var(--hand-ink); }
 .book-rows li.struck .nm, .book-rows li.struck .ag { text-decoration: line-through; text-decoration-color: var(--rule-red); text-decoration-thickness: 2px; opacity: .6; }
 .book-rows li.blank { opacity: .6; }
 .book-foot { font-family: var(--f-type); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); padding-top: 12px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -92,7 +97,7 @@ button:focus-visible { outline: 2px solid var(--rule-red); outline-offset: 2px; 
 .ln-form { font-family: var(--f-type); font-size: .8em; line-height: 1.5; white-space: pre-wrap; background: var(--paper-2); border: 1px solid var(--paper-3); border-top: 3px double var(--ink-soft); padding: 14px 16px; margin: .3em 0 1em; color: var(--ink); }
 .ln-entry { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; border-top: 1px solid var(--rule-blue); border-bottom: 1px solid var(--rule-blue); padding: 9px 4px 5px 14px; margin: .2em 0 1em; position: relative; background: var(--paper-2); }
 .ln-entry::before { content: ""; position: absolute; left: 5px; top: 0; bottom: 0; width: 3px; border-left: 1px solid var(--rule-red); border-right: 1px solid var(--rule-red); opacity: .7; }
-.ln-entry .nm, .ln-entry .ag { font-family: var(--f-hand); font-size: 1.32em; line-height: 1.2; color: #1b2f55; }
+.ln-entry .nm, .ln-entry .ag { font-family: var(--f-hand); font-size: 1.32em; line-height: 1.2; color: var(--hand-ink); }
 .ln-entry .nm small { font-size: .7em; opacity: .75; margin-left: .5em; }
 .ln-entry .wr { display: inline-block; clip-path: inset(0 100% 0 0); animation: wr 1.5s .25s cubic-bezier(.3, .1, .6, 1) forwards; }
 @keyframes wr { to { clip-path: inset(-20% -2% -20% 0); } }
