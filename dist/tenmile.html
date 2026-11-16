@@ -1,0 +1,1999 @@
+<title>Tenmile</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Courier+Prime:wght@400;700&family=IM+Fell+English+SC&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: a Commission ledger lying open. Cyanotype survey plate and the book on the left leaf, the day on the right. */
+:root {
+  --paper: #dfe4d3;
+  --paper-2: #d3d9c6;
+  --paper-3: #c5ccb7;
+  --ink: #18212c;
+  --ink-soft: #46525c;
+  --ink-faint: #76817f;
+  --rule-blue: #7d9db6;
+  --rule-red: #b24a5a;
+  --cyan-deep: #0b2545;
+  --cyan-pale: #dbe8ef;
+  --v-ledger: #1f4f7d;
+  --v-hand: #74540c;
+  --v-ear: #256248;
+  --v-dog: #992d2d;
+  --v-preacher: #57367a;
+  --v-river: #14666f;
+  --f-display: 'IM Fell English SC', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --f-body: 'Spectral', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --f-type: 'Courier Prime', 'Courier New', Courier, monospace;
+  --f-hand: 'Cedarville Cursive', 'Snell Roundhand', 'Apple Chancery', cursive;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body { background: var(--cyan-deep); color: var(--ink); font-family: var(--f-body); font-size: 16px; overflow: hidden; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; touch-action: manipulation; }
+button:focus-visible { outline: 2px solid var(--rule-red); outline-offset: 2px; }
+
+#app { height: 100%; display: flex; flex-direction: column; background: var(--paper); }
+#bar { flex: none; display: flex; align-items: center; gap: 14px; padding-block: 7px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--cyan-deep); color: var(--cyan-pale); }
+#bar .brand { font-family: var(--f-display); font-size: 1.15rem; letter-spacing: .14em; }
+#bar .clock { font-family: var(--f-type); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; opacity: .8; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+#bar nav { display: flex; gap: 6px; }
+#bar nav button { white-space: nowrap; font-family: var(--f-type); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan-pale); border: 1px solid rgba(219, 232, 239, .4); padding: 8px 11px; min-height: 36px; }
+#bar nav button:active { background: rgba(219, 232, 239, .15); }
+#bar nav .only-narrow { display: none; }
+
+#stage { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(300px, 44%) 1fr; }
+#left { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--paper-2); border-right: 1px solid var(--paper-3); }
+#plate { margin: 0; flex: none; position: relative; aspect-ratio: 8 / 5; max-width: 100%; background: var(--cyan-deep); overflow: hidden; }
+#plate svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#plate .fade { position: absolute; inset: 0; background: var(--cyan-deep); opacity: 0; pointer-events: none; transition: opacity .45s ease; }
+#plate.swap .fade { opacity: 1; }
+.pl-t { font: 700 12.5px var(--f-type); fill: #dbe8ef; letter-spacing: .08em; }
+.pl-s { font: 10px var(--f-type); fill: #dbe8ef; letter-spacing: .1em; opacity: .85; }
+.pl-m { font: 700 12px var(--f-type); fill: #dbe8ef; letter-spacing: .12em; paint-order: stroke; stroke: #0b2545; stroke-width: 4px; }
+.pl-sign { font: 15px var(--f-display); fill: #dbe8ef; letter-spacing: .14em; }
+.mk { cursor: pointer; }
+.mk circle:nth-child(2) { animation: pulse 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes pulse { 50% { transform: scale(1.7); opacity: .35; } }
+.ripples { animation: drift 7s linear infinite alternate; }
+@keyframes drift { to { transform: translateX(22px); } }
+.smoke { stroke-dasharray: 6 5; animation: smoke 5s linear infinite; }
+@keyframes smoke { to { stroke-dashoffset: -44; } }
+.riv { stroke-dasharray: 3 9; animation: smoke 9s linear infinite reverse; }
+
+/* the book */
+#book { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 18px 20px 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); position: relative; }
+.book-inner { position: relative; padding-left: 34px; min-height: 100%; background-image: linear-gradient(var(--rule-blue), var(--rule-blue)); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 46px; }
+.book-inner::before { content: ""; position: absolute; left: 22px; top: 0; bottom: 0; width: 4px; border-left: 1px solid var(--rule-red); border-right: 1px solid var(--rule-red); opacity: .7; }
+.book-head { font-family: var(--f-type); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 10px; height: 46px; align-items: center; }
+.book-head b { font-weight: 700; color: var(--ink); }
+.book-rows { list-style: none; margin: 0; padding: 0; }
+.book-rows li { display: grid; grid-template-columns: 1.6em 1fr auto; gap: 8px; align-items: baseline; min-height: 40px; border-bottom: 1px solid var(--rule-blue); padding: 6px 2px 0 0; }
+.book-rows .no { font-family: var(--f-type); font-size: .7rem; color: var(--ink-faint); }
+.book-rows .nm { font-family: var(--f-hand); font-size: 1.22rem; line-height: 1.15; color: #1b2f55; min-width: 0; }
+.book-rows .nm small { display: block; font-size: .8rem; opacity: .75; }
+.book-rows .ag { font-family: var(--f-hand); font-size: 1.15rem; color: #1b2f55; }
+.book-rows li.struck .nm, .book-rows li.struck .ag { text-decoration: line-through; text-decoration-color: var(--rule-red); text-decoration-thickness: 2px; opacity: .6; }
+.book-rows li.blank { opacity: .6; }
+.book-foot { font-family: var(--f-type); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); padding-top: 12px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+/* the day */
+#right { min-width: 0; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; position: relative; background: var(--paper); scroll-behavior: smooth; }
+#log { max-width: 35.5rem; margin: 0 auto; padding-block: 26px 46vh; padding-left: max(22px, env(safe-area-inset-left, 0px)); padding-right: max(22px, env(safe-area-inset-right, 0px)); font-size: 1.19rem; line-height: 1.52; }
+#log > * { animation: rise .5s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+#log p { margin: 0 0 .78em; }
+.ln-n { color: var(--ink); }
+.ln-p { padding-left: 1.1em; text-indent: -1.1em; }
+.who { font-family: var(--f-display); letter-spacing: .08em; font-size: .92em; margin-right: .5em; color: var(--ink); }
+.who::after { content: "."; }
+.ln-v { margin: 0 0 .78em; padding: .1em 0 .1em .85em; border-left: 3px double currentColor; font-style: italic; }
+.ln-v .who { font-style: normal; color: inherit; }
+.ln-v .txt { color: var(--ink); }
+.v-ledger { color: var(--v-ledger); } .v-hand { color: var(--v-hand); } .v-ear { color: var(--v-ear); } .v-dog { color: var(--v-dog); } .v-preacher { color: var(--v-preacher); } .v-river { color: var(--v-river); }
+.ln-you { color: var(--ink-soft); padding-left: 1.1em; text-indent: -1.1em; }
+.ln-you .who { color: var(--ink-soft); }
+.ln-you.act { font-style: italic; text-indent: 0; padding-left: 0; }
+.ln-note { font-family: var(--f-type); font-size: .72em; letter-spacing: .06em; color: var(--ink-soft); text-transform: uppercase; line-height: 1.5; }
+.ln-form { font-family: var(--f-type); font-size: .8em; line-height: 1.5; white-space: pre-wrap; background: var(--paper-2); border: 1px solid var(--paper-3); border-top: 3px double var(--ink-soft); padding: 14px 16px; margin: .3em 0 1em; color: var(--ink); }
+.ln-entry { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; border-top: 1px solid var(--rule-blue); border-bottom: 1px solid var(--rule-blue); padding: 9px 4px 5px 14px; margin: .2em 0 1em; position: relative; background: var(--paper-2); }
+.ln-entry::before { content: ""; position: absolute; left: 5px; top: 0; bottom: 0; width: 3px; border-left: 1px solid var(--rule-red); border-right: 1px solid var(--rule-red); opacity: .7; }
+.ln-entry .nm, .ln-entry .ag { font-family: var(--f-hand); font-size: 1.32em; line-height: 1.2; color: #1b2f55; }
+.ln-entry .nm small { font-size: .7em; opacity: .75; margin-left: .5em; }
+.ln-entry .wr { display: inline-block; clip-path: inset(0 100% 0 0); animation: wr 1.5s .25s cubic-bezier(.3, .1, .6, 1) forwards; }
+@keyframes wr { to { clip-path: inset(-20% -2% -20% 0); } }
+hr.sep { border: 0; height: 12px; margin: 1.3em auto 1.5em; width: 60px; background: linear-gradient(var(--ink-faint), var(--ink-faint)) center / 100% 1px no-repeat; opacity: .6; }
+
+/* choices */
+.opts { list-style: none; margin: 1.1em 0 0; padding: 0; counter-reset: o; border-top: 1px solid var(--ink-soft); }
+.opts li { counter-increment: o; border-bottom: 1px solid var(--paper-3); }
+.opts button { display: grid; grid-template-columns: 1.7em 1fr; width: 100%; padding: 12px 6px 12px 2px; min-height: 48px; align-items: baseline; line-height: 1.38; }
+.opts button::before { content: counter(o) "."; font-family: var(--f-type); font-size: .74em; color: var(--ink-faint); }
+.opts button:active { background: var(--paper-2); }
+@media (hover: hover) { .opts button:hover { background: var(--paper-2); } }
+.opts .o-act { font-style: italic; }
+.opts .o-sub { display: block; font-size: .8em; color: var(--ink-soft); font-style: normal; margin-top: 2px; }
+.opts .o-chk { display: block; font-family: var(--f-type); font-style: normal; font-size: .66em; letter-spacing: .09em; text-transform: uppercase; margin-top: 4px; }
+.opts .o-chk .red { color: var(--v-dog); }
+.opts .o-mod { display: block; font-family: var(--f-type); font-style: normal; font-size: .64em; letter-spacing: .04em; color: var(--ink-soft); margin-top: 1px; }
+.opts .o-tag { font-family: var(--f-type); font-style: normal; font-size: .64em; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-faint); margin-left: .6em; }
+.opts li.spent button { opacity: .5; cursor: default; }
+.cont { margin-top: .6em; }
+.cont button { font-family: var(--f-type); font-size: .78em; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); padding: 14px 18px 14px 0; min-height: 48px; }
+.cont button::after { content: " \25B8"; }
+
+/* the throw */
+.roll { border: 1px solid currentColor; padding: 12px 14px; margin: .2em 0 1em; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; align-items: center; background: var(--paper-2); }
+.roll .dice { display: flex; gap: 8px; }
+.die { width: 40px; height: 40px; border: 1.5px solid currentColor; border-radius: 6px; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: 5px; background: var(--paper); }
+.die i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; place-self: center; opacity: 0; }
+.die i.on { opacity: 1; }
+.roll.rolling .die { animation: tumble .16s linear infinite; }
+@keyframes tumble { 25% { transform: rotate(9deg) translateY(-2px); } 75% { transform: rotate(-9deg) translateY(1px); } }
+.roll .sum { font-family: var(--f-type); font-size: .7em; letter-spacing: .06em; text-transform: uppercase; line-height: 1.5; color: var(--ink); }
+.roll .sum b { color: inherit; }
+.roll .res { grid-column: 1 / -1; font-family: var(--f-display); font-size: 1.05em; letter-spacing: .1em; min-height: 1.3em; }
+.roll .res.fail { color: var(--v-dog); }
+.roll .res.pass { color: var(--v-ear); }
+
+/* sheets */
+#sheet { position: fixed; inset: 0; z-index: 30; background: rgba(11, 37, 69, .72); display: flex; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+#sheet .card { background: var(--paper); width: min(34rem, 100%); max-height: 100%; overflow-y: auto; padding: 22px 24px 20px; border-top: 6px double var(--ink); box-shadow: 0 10px 40px rgba(0, 0, 0, .45); }
+#sheet h2 { font-family: var(--f-display); font-weight: 400; letter-spacing: .12em; font-size: 1.3rem; margin: 0 0 12px; }
+#sheet .close { font-family: var(--f-type); font-size: .76rem; letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--ink-soft); padding: 10px 16px; margin-top: 16px; min-height: 42px; }
+#sheet .row-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.vrow { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 9px 0; border-bottom: 1px solid var(--paper-3); }
+.vrow .nm { font-family: var(--f-display); letter-spacing: .08em; font-size: 1.05rem; }
+.vrow .pips { font-family: var(--f-type); letter-spacing: .2em; font-size: .9rem; }
+.vrow .gl { grid-column: 1 / -1; font-size: .95rem; color: var(--ink-soft); line-height: 1.4; }
+.howto { font-size: .98rem; line-height: 1.5; color: var(--ink); }
+.howto p { margin: 0 0 .7em; }
+#sheet #book2 { padding: 0; }
+
+/* title */
+#title { position: fixed; inset: 0; z-index: 40; background: var(--cyan-deep); color: var(--cyan-pale); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px max(24px, env(safe-area-inset-right, 0px)) 24px max(24px, env(safe-area-inset-left, 0px)); transition: opacity .9s ease; overflow: hidden; }
+#title.gone { opacity: 0; pointer-events: none; }
+#title .tplate { position: absolute; inset: 0; opacity: .5; }
+#title .tplate svg { width: 100%; height: 100%; display: block; }
+#title .veil { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(11, 37, 69, .25), rgba(11, 37, 69, .92) 75%); }
+#title .in { position: relative; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 30rem; }
+#title .over { font-family: var(--f-type); font-size: .74rem; letter-spacing: .3em; text-transform: uppercase; opacity: .85; }
+#title h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(3.4rem, 13vw, 6.6rem); letter-spacing: .16em; margin: 0; line-height: 1; padding-left: .16em; text-shadow: 0 2px 24px rgba(11, 37, 69, .9); }
+#title .sub { font-family: var(--f-body); font-style: italic; font-size: 1.15rem; line-height: 1.5; opacity: .92; margin: 0; }
+#title .btns { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; align-items: stretch; min-width: 15rem; }
+#title .btns button { font-family: var(--f-type); font-size: .86rem; letter-spacing: .2em; text-transform: uppercase; text-align: center; color: var(--cyan-pale); border: 1px solid var(--cyan-pale); padding: 15px 22px; min-height: 50px; background: rgba(11, 37, 69, .55); }
+#title .btns button.primary { background: var(--cyan-pale); color: var(--cyan-deep); }
+#title .fine { font-family: var(--f-type); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; opacity: .65; margin-top: 10px; }
+
+.fin { text-align: center; padding: 1.5em 0 0; }
+.fin h3 { font-family: var(--f-display); font-weight: 400; font-size: 2rem; letter-spacing: .2em; margin: 0 0 .2em; }
+.fin p { font-family: var(--f-type); font-size: .74em; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+.fin button { font-family: var(--f-type); font-size: .8em; letter-spacing: .16em; text-transform: uppercase; border: 1px solid var(--ink); padding: 14px 22px; margin-top: 12px; min-height: 48px; }
+
+/* portrait and narrow: plate above, the day below, the book behind a button */
+@media (max-aspect-ratio: 1/1), (max-width: 720px) {
+  #stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  #left { border-right: 0; }
+  #plate { aspect-ratio: auto; height: min(34vh, 62vw); }
+  #book { display: none; }
+  #bar nav .only-narrow { display: inline-block; }
+  #log { padding-block: 20px 40vh; }
+}
+@media (max-width: 480px) {
+  #log { font-size: 1.08rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  #bar { gap: 8px; }
+  #bar .clock { display: none; }
+  #bar .brand { flex: 1; }
+  #bar nav button { padding: 8px 6px; font-size: .62rem; letter-spacing: .06em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01s !important; animation-iteration-count: 1 !important; transition-duration: .01s !important; }
+  #right { scroll-behavior: auto; }
+}
+
+</style>
+<div id="app">
+  <header id="bar">
+    <span class="brand">Tenmile</span>
+    <span class="clock" id="clock"></span>
+    <nav>
+      <button id="b-book" class="only-narrow">Book</button>
+      <button id="b-voices">Voices</button>
+      <button id="b-sound">Sound on</button>
+      <button id="b-menu" aria-label="Menu">Menu</button>
+    </nav>
+  </header>
+  <main id="stage">
+    <section id="left">
+      <figure id="plate"><div id="plate-svg"></div><div class="fade"></div></figure>
+      <aside id="book" aria-label="The ledger"></aside>
+    </section>
+    <section id="right" aria-live="polite"><div id="log"></div></section>
+  </main>
+</div>
+<div id="sheet" hidden><div class="card"></div></div>
+<div id="title">
+  <div class="tplate"></div><div class="veil"></div>
+  <div class="in">
+    <span class="over">Valley Commission · Schedule C</span>
+    <h1>Tenmile</h1>
+    <p class="sub">A valley is to be flooded at dusk. You have a ledger, a mule, and one day to write down who lives there.</p>
+    <div class="btns">
+      <button id="t-cont" hidden>Take up the book</button>
+      <button id="t-new" class="primary">Come down the grade</button>
+    </div>
+    <span class="fine">About fifteen minutes · Sound on is better</span>
+  </div>
+</div>
+<script>
+/* Plates: cyanotype survey drawings, 800x500. Each returns inner SVG. */
+const PL = '#dbe8ef';
+function fig(x, y, s, opts) {
+  // small standing figure, feet at x,y, height ~ 26*s
+  opts = opts || {};
+  const h = 26 * s;
+  let g = `<g transform="translate(${x} ${y})" fill="${PL}">`;
+  g += `<circle cx="0" cy="${-h}" r="${3.2 * s}"/>`;
+  if (opts.skirt) g += `<path d="M${-3 * s} ${-h + 4 * s} L${3 * s} ${-h + 4 * s} L${5.5 * s} 0 L${-5.5 * s} 0 Z"/>`;
+  else g += `<path d="M${-3.4 * s} ${-h + 4 * s} L${3.4 * s} ${-h + 4 * s} L${3 * s} ${-h * 0.42} L${3.6 * s} 0 L${1 * s} 0 L0 ${-h * 0.38} L${-1 * s} 0 L${-3.6 * s} 0 L${-3 * s} ${-h * 0.42} Z"/>`;
+  if (opts.hat) g += `<path d="M${-6 * s} ${-h - 1.6 * s} L${6 * s} ${-h - 1.6 * s} L${3 * s} ${-h - 2.6 * s} L${2.6 * s} ${-h - 5.6 * s} L${-2.6 * s} ${-h - 5.6 * s} L${-3 * s} ${-h - 2.6 * s} Z"/>`;
+  g += `</g>`;
+  return g;
+}
+function mule(x, y, s) {
+  return `<g transform="translate(${x} ${y}) scale(${s})" fill="${PL}">
+  <path d="M-22 -22 C-10 -26 8 -26 18 -23 L26 -34 L29 -40 L31 -34 L34 -39 L35 -32 L42 -24 L40 -19 L32 -21 L24 -14 L22 0 L18 0 L17 -10 L-12 -9 L-14 0 L-18 0 L-19 -11 C-24 -13 -25 -18 -22 -22 Z"/>
+  <path d="M-22 -21 C-27 -18 -27 -10 -25 -4" stroke="${PL}" stroke-width="1.6" fill="none"/></g>`;
+}
+function waterline(y, label) {
+  return `<g class="wl"><line x1="18" x2="782" y1="${y}" y2="${y}" stroke="${PL}" stroke-width="1.2" stroke-dasharray="14 7 2 7" opacity=".9"/>
+  <text x="776" y="${y - 7}" text-anchor="end" class="pl-t">${label || 'PROPOSED WATER SURFACE · EL. 412'}</text>
+  <path d="M30 ${y} l-6 -9 h12 z" fill="${PL}"/></g>`;
+}
+function frame(no, name) {
+  return `<rect x="9" y="9" width="782" height="482" fill="none" stroke="${PL}" stroke-width="1" opacity=".55"/>
+  <rect x="14" y="14" width="772" height="472" fill="none" stroke="${PL}" stroke-width=".5" opacity=".4"/>
+  <g><rect x="524" y="446" width="262" height="40" fill="#0d2a4a" stroke="${PL}" stroke-width=".7" opacity=".95"/>
+  <text x="534" y="462" class="pl-s">VALLEY COMMISSION · SURVEY OF TENMILE</text>
+  <text x="534" y="478" class="pl-t">PLATE ${no}. ${name}</text></g>`;
+}
+function hatch(id, gap, ang, op) {
+  return `<pattern id="${id}" width="${gap}" height="${gap}" patternUnits="userSpaceOnUse" patternTransform="rotate(${ang})"><line x1="0" y1="0" x2="0" y2="${gap}" stroke="${PL}" stroke-width=".8" opacity="${op}"/></pattern>`;
+}
+const DEFS = `<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b2748"/><stop offset=".55" stop-color="#153f6c"/><stop offset="1" stop-color="#0e3157"/></linearGradient>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#dbe8ef" stop-opacity=".55"/><stop offset="1" stop-color="#dbe8ef" stop-opacity="0"/></radialGradient>
+<filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .86  0 0 0 0 .91  0 0 0 0 .94  0 0 0 .5 -.18"/></filter>
+<filter id="blot" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".008 .012" numOctaves="3" seed="3"/><feColorMatrix values="0 0 0 0 .04  0 0 0 0 .12  0 0 0 0 .22  0 0 0 1.1 -.5"/></filter>
+${hatch('h1', 5, 35, .5)}${hatch('h2', 4, -40, .38)}${hatch('h3', 7, 90, .3)}${hatch('h4', 3.2, 60, .55)}${hatch('h5', 6, 0, .35)}
+</defs>`;
+function base(sunx, suny) {
+  return `<rect width="800" height="500" fill="url(#sky)"/>
+  <circle cx="${sunx}" cy="${suny}" r="70" fill="url(#glow)"/><circle cx="${sunx}" cy="${suny}" r="15" fill="none" stroke="${PL}" stroke-width="1.1"/><circle cx="${sunx}" cy="${suny}" r="11" fill="${PL}" opacity=".85"/>`;
+}
+function finish() {
+  return `<rect width="800" height="500" filter="url(#blot)" opacity=".5"/><rect width="800" height="500" filter="url(#grain)" opacity=".5"/>`;
+}
+function sunAt(t) { // t 0..5
+  const xs = [120, 230, 400, 560, 660, 715], ys = [150, 95, 60, 90, 135, 178];
+  t = Math.max(0, Math.min(5, t));
+  return [xs[t], ys[t]];
+}
+function house(x, y, w, h, o) {
+  o = o || {};
+  const r = o.roof || h * .55;
+  return `<g><path d="M${x} ${y} v${-h} l${w / 2} ${-r} l${w / 2} ${r} v${h} z" fill="#123a65" stroke="${PL}" stroke-width="1"/>
+  <path d="M${x} ${y} v${-h} l${w / 2} ${-r} l${w / 2} ${r} v${h} z" fill="url(#${o.h || 'h2'})"/>
+  ${o.door ? `<rect x="${x + w * .42}" y="${y - h * .62}" width="${w * .18}" height="${h * .62}" fill="#081d36" stroke="${PL}" stroke-width=".7"/>` : ''}</g>`;
+}
+
+const PLATES = {
+  valley(S) {
+    const [sx, sy] = sunAt(S.t);
+    const mk = (id, x, y, label, anchor, dx, dy) => `<g class="mk" data-loc="${id}"><circle cx="${x}" cy="${y}" r="16" fill="#0d2a4a" opacity=".01"/><circle cx="${x}" cy="${y}" r="5.5" fill="none" stroke="${PL}" stroke-width="1.2"/><circle cx="${x}" cy="${y}" r="1.6" fill="${PL}"/><text x="${x + (dx || 0)}" y="${y + (dy || -11)}" text-anchor="${anchor || 'middle'}" class="pl-m" style="font-size:${id === 'dam' ? 13 : 9}px">${label}</text></g>`;
+    return base(sx, sy) + `
+    <path d="M0 215 C90 170 150 205 230 180 C300 160 330 190 400 178 C470 168 520 150 600 172 C680 192 740 160 800 178 V500 H0Z" fill="#0f3359" stroke="${PL}" stroke-width=".9" opacity=".95"/>
+    <path d="M0 215 C90 170 150 205 230 180 C300 160 330 190 400 178 C470 168 520 150 600 172 C680 192 740 160 800 178 V260 H0Z" fill="url(#h5)" opacity=".5"/>
+    <!-- dam at head -->
+    <path d="M352 196 L448 196 L441 236 L359 236 Z" fill="${PL}" opacity=".92"/>
+    <path d="M364 196 v40 M376 196 v40 M388 196 v40 M400 196 v40 M412 196 v40 M424 196 v40 M436 196 v40" stroke="#123a65" stroke-width=".9"/>
+    <rect x="392" y="186" width="16" height="10" fill="${PL}"/>
+    <!-- valley walls -->
+    <path d="M0 215 C60 240 140 250 205 300 C255 338 268 410 232 500 H0Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/>
+    <path d="M0 215 C60 240 140 250 205 300 C255 338 268 410 232 500 H0Z" fill="url(#h1)" opacity=".55"/>
+    <path d="M800 178 C740 230 680 240 622 290 C580 330 566 410 604 500 H800Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/>
+    <path d="M800 178 C740 230 680 240 622 290 C580 330 566 410 604 500 H800Z" fill="url(#h2)" opacity=".6"/>
+    <!-- floor -->
+    <path d="M359 236 L441 236 C500 262 580 296 622 290 C580 330 566 410 604 500 H232 C268 410 255 338 205 300 C270 292 325 262 359 236Z" fill="#123d69" opacity=".9"/>
+    <!-- river -->
+    <path class="riv" d="M400 236 C392 262 436 280 430 310 C422 346 392 356 398 396 C404 434 452 450 440 500" fill="none" stroke="${PL}" stroke-width="5" opacity=".8"/>
+    <path d="M400 236 C392 262 436 280 430 310 C422 346 392 356 398 396 C404 434 452 450 440 500" fill="none" stroke="#123d69" stroke-width="2.4"/>
+    <!-- road down the grade -->
+    <path d="M0 262 C70 268 110 300 150 330 C190 360 240 392 300 396" fill="none" stroke="${PL}" stroke-width="1.1" stroke-dasharray="5 4" opacity=".8"/>
+    <g transform="translate(398 392) scale(1.55) translate(-380 -390)">
+    <!-- town -->
+    ${house(318, 384, 16, 9)}${house(338, 392, 20, 10, { door: 1 })}${house(300, 398, 14, 8)}${house(326, 410, 15, 8)}${house(350, 414, 13, 8)}${house(304, 420, 14, 8)}
+    <!-- church on rise -->
+    <path d="M330 338 q22 -16 46 0 z" fill="#0f3359" stroke="${PL}" stroke-width=".8"/>
+    <path d="M346 330 v-12 l7 -6 l7 6 v12 z M353 312 v-11 M349.5 305 h7" fill="#123a65" stroke="${PL}" stroke-width="1"/>
+    <!-- ferry cable -->
+    <line x1="366" y1="388" x2="398" y2="396" stroke="${PL}" stroke-width=".8"/>
+    <rect x="375" y="388" width="9" height="5" fill="${PL}"/>
+    <!-- mill -->
+    ${house(452, 372, 18, 12, { h: 'h4' })}<circle cx="450" cy="366" r="6" fill="none" stroke="${PL}" stroke-width="1"/>
+    ${S.f.bare ? '' : mk('store', 348, 392, 'STORE', 'end', -11, 3) + mk('church', 353, 326, 'CHURCH', 'end', -12, 3) + mk('ferry', 380, 391, 'FERRY', 'middle', 0, 20)}
+    ${S.f.knowMill ? mk('mill', 461, 364, 'MILL', 'start', 12, 3) : ''}
+    </g>
+    ${waterline(252)}
+    ${S.f.bare ? '' : mk('dam', 400, 214, 'THE WORKS', 'middle', 0, -36)}
+    <g opacity=".8"><path d="M60 440 h90 M60 436 v8 M105 438 v4 M150 436 v8" stroke="${PL}" stroke-width="1"/><text x="60" y="456" class="pl-s">0   ½   1 MILE</text></g>
+    ` + frame('I', 'THE VALLEY') + finish();
+  },
+  store(S) {
+    const [sx, sy] = sunAt(S.t);
+    return base(sx, sy) + `
+    <path d="M0 250 C120 225 260 240 400 232 C560 222 690 236 800 220 V500 H0Z" fill="#0f3359" stroke="${PL}" stroke-width=".8"/>
+    <path d="M0 250 C120 225 260 240 400 232 C560 222 690 236 800 220 V300 H0Z" fill="url(#h5)" opacity=".4"/>
+    <rect x="0" y="392" width="800" height="108" fill="#0b2848"/><line x1="0" x2="800" y1="392" y2="392" stroke="${PL}" stroke-width="1"/>
+    <rect x="0" y="392" width="800" height="108" fill="url(#h1)" opacity=".35"/>
+    <!-- store -->
+    <path d="M210 392 V212 H560 V392 Z" fill="#123a65" stroke="${PL}" stroke-width="1.4"/>
+    <path d="M196 212 H574 L560 176 H210 Z" fill="#0d2a4a" stroke="${PL}" stroke-width="1.4"/>
+    <path d="M210 176 V140 H560 V176" fill="#123a65" stroke="${PL}" stroke-width="1.4"/>
+    <text x="385" y="166" text-anchor="middle" class="pl-sign">OAKE · DRY GOODS</text>
+    <path d="M210 392 V212 H560 V392 Z" fill="url(#h3)" opacity=".5"/>
+    <!-- gallery roof and posts -->
+    <path d="M186 276 H584 L574 262 H196 Z" fill="#0d2a4a" stroke="${PL}" stroke-width="1.2"/>
+    <path d="M200 276 V392 M320 276 V392 M450 276 V392 M570 276 V392" stroke="${PL}" stroke-width="2.2"/>
+    <rect x="186" y="384" width="398" height="8" fill="#0d2a4a" stroke="${PL}" stroke-width="1"/>
+    <!-- door, windows -->
+    <rect x="356" y="296" width="58" height="88" fill="#06182d" stroke="${PL}" stroke-width="1.2"/>
+    <rect x="232" y="300" width="70" height="52" fill="#06182d" stroke="${PL}" stroke-width="1.2"/><path d="M267 300 v52 M232 326 h70" stroke="${PL}" stroke-width=".8"/>
+    <rect x="468" y="300" width="70" height="52" fill="#06182d" stroke="${PL}" stroke-width="1.2"/><path d="M503 300 v52 M468 326 h70" stroke="${PL}" stroke-width=".8"/>
+    <rect x="240" y="226" width="40" height="28" fill="#06182d" stroke="${PL}" stroke-width="1"/><rect x="490" y="226" width="40" height="28" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <!-- chimney smoke -->
+    <rect x="500" y="118" width="18" height="24" fill="#123a65" stroke="${PL}" stroke-width="1.1"/>
+    <path class="smoke" d="M509 116 C500 98 522 88 512 70 C504 54 524 44 518 26" fill="none" stroke="${PL}" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+    <!-- bench and girl -->
+    <path d="M228 370 h72 M234 370 v14 M294 370 v14" stroke="${PL}" stroke-width="2.4"/>
+    <g fill="${PL}"><circle cx="262" cy="343" r="5"/><path d="M256 349 h12 l3 21 h10 v4 h-26 z"/><rect x="266" y="358" width="7" height="6" fill="#0d2a4a" stroke="${PL}" stroke-width=".8"/></g>
+    <!-- hitch rail and mule -->
+    <path d="M610 392 v-30 M700 392 v-30 M604 364 h102" stroke="${PL}" stroke-width="2.2"/>
+    ${mule(656, 392, 1.7)}
+    <!-- empty houses beyond -->
+    ${house(40, 392, 96, 70, { door: 1 })}${house(690, 330, 60, 40, { door: 1 })}
+    ${waterline(96)}
+    ` + frame('II', 'THE STORE') + finish();
+  },
+  church(S) {
+    const [sx, sy] = sunAt(S.t);
+    const crosses = [[120, 400], [170, 420], [86, 440], [220, 398], [610, 410], [660, 432], [712, 404], [560, 440]].map(([x, y]) => `<path d="M${x} ${y} v-26 M${x - 7} ${y - 18} h14" stroke="${PL}" stroke-width="2.4" stroke-linecap="square"/>`).join('');
+    return base(sx, sy) + `
+    <path d="M0 268 C140 248 300 262 420 250 C560 238 680 256 800 240 V500 H0Z" fill="#0f3359" stroke="${PL}" stroke-width=".8"/>
+    <path d="M0 268 C140 248 300 262 420 250 C560 238 680 256 800 240 V330 H0Z" fill="url(#h5)" opacity=".4"/>
+    <path d="M0 392 C160 340 300 328 400 328 C520 328 660 344 800 388 V500 H0Z" fill="#0b2848" stroke="${PL}" stroke-width="1.1"/>
+    <path d="M0 392 C160 340 300 328 400 328 C520 328 660 344 800 388 V500 H0Z" fill="url(#h1)" opacity=".4"/>
+    <!-- church -->
+    <path d="M300 334 V196 L372 150 L444 196 V334 Z" fill="#123a65" stroke="${PL}" stroke-width="1.4"/>
+    <path d="M300 334 V196 L372 150 L444 196 V334 Z" fill="url(#h3)" opacity=".5"/>
+    <path d="M348 166 V96 L372 60 L396 96 V166" fill="#123a65" stroke="${PL}" stroke-width="1.4"/>
+    <rect x="360" y="104" width="24" height="34" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <path d="M372 60 V30 M362 40 H382" stroke="${PL}" stroke-width="2"/>
+    <path d="M356 334 V270 q16 -20 32 0 V334 Z" fill="#06182d" stroke="${PL}" stroke-width="1.1"/>
+    <path d="M316 230 q8 -12 16 0 v40 h-16 z M412 230 q8 -12 16 0 v40 h-16 z" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    ${crosses}
+    <!-- the hole -->
+    <path d="M452 424 h96 l-10 30 h-76 z" fill="#06182d" stroke="${PL}" stroke-width="1.2"/>
+    <path d="M556 430 q26 -30 54 -2 q12 12 4 20 h-66 z" fill="#123a65" stroke="${PL}" stroke-width="1"/><path d="M556 430 q26 -30 54 -2 q12 12 4 20 h-66 z" fill="url(#h4)"/>
+    <g fill="${PL}"><circle cx="498" cy="398" r="5.5"/><path d="M490 405 h16 l5 26 h-26 z"/><path d="M506 408 l22 -12 l2 3 l-22 14 z"/><path d="M526 392 l10 28" stroke="${PL}" stroke-width="2.2"/><path d="M533 418 l8 2 l-2 10 l-9 -3 z"/></g>
+    <path d="M404 452 l34 -8 l2 7 l-34 8 z M418 438 l4 22" fill="${PL}" stroke="${PL}" stroke-width="1"/>
+    ${waterline(128)}
+    <text x="300" y="476" class="pl-s">GRAVE 31 · NOT ON REMOVAL LIST</text>
+    ` + frame('III', 'THE CHURCHYARD') + finish();
+  },
+  ferry(S) {
+    const [sx, sy] = sunAt(S.t);
+    return base(sx, sy) + `
+    <path d="M0 236 C140 210 260 226 400 214 C540 202 690 224 800 204 V500 H0Z" fill="#0f3359" stroke="${PL}" stroke-width=".8"/>
+    <path d="M0 236 C140 210 260 226 400 214 C540 202 690 224 800 204 V290 H0Z" fill="url(#h5)" opacity=".4"/>
+    <!-- far bank -->
+    <path d="M0 300 C200 286 520 292 800 280 V330 H0Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/>
+    ${house(640, 304, 40, 26, { h: 'h4' })}<circle cx="636" cy="294" r="12" fill="none" stroke="${PL}" stroke-width="1.2"/><path d="M636 282 v24 M624 294 h24" stroke="${PL}" stroke-width=".8"/>
+    <!-- water -->
+    <rect x="0" y="322" width="800" height="110" fill="#164673"/>
+    <g class="ripples" stroke="${PL}" stroke-width="1" opacity=".55" fill="none">
+      <path d="M30 346 h70 M160 340 h110 M330 350 h60 M450 342 h120 M640 348 h90 M90 372 h130 M290 380 h90 M470 370 h60 M600 378 h140 M40 404 h80 M210 410 h150 M430 402 h110 M620 412 h70"/>
+    </g>
+    <!-- mud skirt and near bank -->
+    <path d="M0 432 C200 416 520 428 800 414 V500 H0Z" fill="#1b4f80" stroke="${PL}" stroke-width=".8"/>
+    <path d="M0 432 C200 416 520 428 800 414 V500 H0Z" fill="url(#h4)" opacity=".35"/>
+    <path d="M0 452 C200 440 480 452 800 440 V500 H0Z" fill="#0b2848" stroke="${PL}" stroke-width="1.1"/>
+    <!-- cable -->
+    <path d="M120 300 V396 M112 396 h16" stroke="${PL}" stroke-width="3"/>
+    <path d="M120 304 Q400 350 760 268" fill="none" stroke="${PL}" stroke-width="1.3"/>
+    <path d="M760 262 v26" stroke="${PL}" stroke-width="3"/>
+    <!-- scow -->
+    <path d="M250 398 h190 l-14 20 h-162 z" fill="#0d2a4a" stroke="${PL}" stroke-width="1.4"/>
+    <path d="M262 398 v-14 h166 v14" fill="none" stroke="${PL}" stroke-width="1"/>
+    <path d="M300 384 L296 326 M400 384 L404 336" stroke="${PL}" stroke-width="1"/>
+    <g fill="${PL}"><circle cx="348" cy="372" r="5"/><path d="M341 378 h14 l4 14 h14 v6 h-32 z"/><path d="M342 358 h12 l3 8 h-18 z"/></g>
+    <!-- house on bank with chair -->
+    <path d="M560 452 V372 H706 V452 Z" fill="#123a65" stroke="${PL}" stroke-width="1.3"/><path d="M560 452 V372 H706 V452 Z" fill="url(#h3)" opacity=".5"/>
+    <path d="M546 374 L633 330 L720 374 Z" fill="#0d2a4a" stroke="${PL}" stroke-width="1.3"/>
+    <rect x="652" y="402" width="26" height="50" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <rect x="582" y="396" width="34" height="26" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <path d="M500 452 h60 M500 452 v-2" stroke="${PL}" stroke-width="2"/>
+    <path d="M518 452 v-18 h16 v18 M518 434 v-20 M518 440 h16" stroke="${PL}" stroke-width="2" fill="none"/>
+    <!-- bell post -->
+    <path d="M200 452 v-56 h20" stroke="${PL}" stroke-width="2.2" fill="none"/><path d="M214 398 q6 -2 8 8 q1 6 4 8 h-18 q3 -2 4 -8 z" fill="${PL}"/>
+    ${waterline(150)}
+    <text x="140" y="298" class="pl-s">CABLE, 1⅛ IN. · STRUNG 18—</text>
+    ` + frame('IV', 'THE CROSSING') + finish();
+  },
+  mill(S) {
+    const [sx, sy] = sunAt(S.t);
+    let spokes = '';
+    for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; spokes += `<line x1="250" y1="330" x2="${250 + 96 * Math.cos(a)}" y2="${330 + 96 * Math.sin(a)}" stroke="${PL}" stroke-width="1.2"/>`; }
+    let stones = '';
+    for (let r = 0; r < 9; r++) for (let c = 0; c < 8; c++) { stones += `<rect x="${316 + c * 34 + (r % 2 ? 17 : 0)}" y="${186 + r * 26}" width="34" height="26" fill="none" stroke="${PL}" stroke-width=".5" opacity=".5"/>`; }
+    return base(sx, sy) + `
+    <path d="M0 240 C140 220 300 230 420 222 C560 214 690 232 800 212 V500 H0Z" fill="#0f3359" stroke="${PL}" stroke-width=".8"/>
+    <path d="M0 240 C140 220 300 230 420 222 C560 214 690 232 800 212 V300 H0Z" fill="url(#h5)" opacity=".4"/>
+    <rect x="0" y="420" width="800" height="80" fill="#0b2848"/><line x1="0" x2="800" y1="420" y2="420" stroke="${PL}" stroke-width="1"/>
+    <rect x="0" y="420" width="800" height="80" fill="url(#h1)" opacity=".35"/>
+    <!-- mill body -->
+    <clipPath id="mb"><path d="M316 420 V186 H588 V420 Z"/></clipPath>
+    <path d="M316 420 V186 H588 V420 Z" fill="#123a65" stroke="${PL}" stroke-width="1.5"/>
+    <g clip-path="url(#mb)">${stones}</g>
+    <path d="M300 190 L452 104 L604 190 Z" fill="#0d2a4a" stroke="${PL}" stroke-width="1.5"/><path d="M300 190 L452 104 L604 190 Z" fill="url(#h2)" opacity=".6"/>
+    <rect x="470" y="330" width="52" height="90" fill="#06182d" stroke="${PL}" stroke-width="1.2"/>
+    <rect x="462" y="420" width="68" height="8" fill="#0d2a4a" stroke="${PL}" stroke-width="1"/>
+    <ellipse cx="496" cy="418" rx="12" ry="3.4" fill="${PL}"/>
+    <rect x="372" y="226" width="34" height="44" fill="#06182d" stroke="${PL}" stroke-width="1"/><rect x="500" y="226" width="34" height="44" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <rect x="436" y="140" width="30" height="30" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <!-- wheel in dry race -->
+    <path d="M120 450 h260 v-22 h-260 z" fill="#06182d" stroke="${PL}" stroke-width="1"/>
+    <circle cx="250" cy="330" r="96" fill="none" stroke="${PL}" stroke-width="3"/><circle cx="250" cy="330" r="80" fill="none" stroke="${PL}" stroke-width="1.2"/><circle cx="250" cy="330" r="9" fill="${PL}"/>
+    ${spokes}
+    <!-- weeds -->
+    <path d="M150 428 q4 -30 -6 -44 M160 428 q0 -24 10 -38 M200 428 q-4 -26 4 -50 M226 428 q8 -20 2 -40 M300 428 q-6 -22 6 -46 M330 428 q6 -18 0 -34 M184 428 q10 -14 16 -30" stroke="${PL}" stroke-width="1.3" fill="none" opacity=".9"/>
+    <!-- sluice -->
+    <path d="M40 300 h120 l30 -8 M40 300 v128 M100 300 v128" stroke="${PL}" stroke-width="2" fill="none"/>
+    ${waterline(86)}
+    <text x="130" y="470" class="pl-s">RACE DRY SINCE GATES TRIED</text>
+    ` + frame('V', 'THE MILL') + finish();
+  },
+  dam(S) {
+    const [sx, sy] = [700, 62];
+    let butt = '';
+    for (let i = 0; i < 11; i++) butt += `<path d="M${90 + i * 64} 150 l10 0 l14 290 l-38 0 z" fill="#b9cfdc" opacity=".35"/>`;
+    return base(sx, sy) + `
+    <path d="M0 200 C80 180 130 150 190 150 H0Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/>
+    <path d="M800 190 C740 170 700 150 650 150 H800Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/>
+    <path d="M0 150 C40 150 60 160 80 150 L60 440 H0Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/><path d="M0 150 C40 150 60 160 80 150 L60 440 H0Z" fill="url(#h1)" opacity=".5"/>
+    <path d="M800 150 H760 L776 440 H800Z" fill="#0b2848" stroke="${PL}" stroke-width="1"/>
+    <!-- the wall -->
+    <path d="M70 150 H770 L784 440 H56 Z" fill="#9fb9c9" opacity=".5" stroke="${PL}" stroke-width="1.6"/>
+    ${butt}
+    <path d="M70 150 H770 L784 440 H56 Z" fill="url(#h3)" opacity=".45"/>
+    <path d="M62 150 H778 V138 H62Z" fill="${PL}" opacity=".9"/>
+    <!-- streaks -->
+    <path d="M150 152 v120 M230 152 v70 M356 152 v160 M470 152 v90 M610 152 v140 M700 152 v60" stroke="#0d2a4a" stroke-width="2" opacity=".5"/>
+    <!-- gatehouse -->
+    <rect x="372" y="92" width="76" height="46" fill="#123a65" stroke="${PL}" stroke-width="1.4"/><path d="M364 92 h92 l-8 -14 h-76 z" fill="#0d2a4a" stroke="${PL}" stroke-width="1.2"/>
+    <rect x="386" y="104" width="14" height="18" fill="#06182d" stroke="${PL}" stroke-width=".8"/><rect x="420" y="104" width="14" height="18" fill="#06182d" stroke="${PL}" stroke-width=".8"/>
+    <!-- gates -->
+    <g fill="#06182d" stroke="${PL}" stroke-width="1.2"><path d="M330 440 v-70 q20 -22 40 0 v70 z"/><path d="M390 440 v-70 q20 -22 40 0 v70 z"/><path d="M450 440 v-70 q20 -22 40 0 v70 z"/></g>
+    <!-- ground -->
+    <rect x="0" y="440" width="800" height="60" fill="#0b2848"/><line x1="0" x2="800" y1="440" y2="440" stroke="${PL}" stroke-width="1"/>
+    <!-- table, engineer, sergeant on horse, wagon -->
+    <path d="M164 440 v-22 M216 440 v-22 M158 418 h64" stroke="${PL}" stroke-width="2.4"/><rect x="180" y="413" width="22" height="5" fill="${PL}"/>
+    ${fig(140, 440, 1.25, { hat: 0 })}
+    ${mule(262, 440, 1.5)}
+    <g fill="${PL}"><circle cx="262" cy="372" r="5"/><path d="M255 378 h14 l3 24 h-20 z"/><path d="M253 368 h18 l-3 -7 h-12 z"/></g>
+    <path d="M560 440 v-24 h110 v24 M560 416 l-30 12" stroke="${PL}" stroke-width="2" fill="none"/><circle cx="584" cy="436" r="12" fill="none" stroke="${PL}" stroke-width="2"/><circle cx="648" cy="436" r="12" fill="none" stroke="${PL}" stroke-width="2"/>
+    ${fig(700, 440, 1.1, { hat: 1 })}${fig(722, 440, 1.1, { hat: 1 })}${fig(746, 440, 1.15, { hat: 1 })}
+    ${waterline(168, 'DESIGN WATER SURFACE · EL. 412')}
+    <text x="96" y="186" class="pl-s">CREST EL. 420 · 11 BAYS</text>
+    ` + frame('VI', 'THE WORKS') + finish();
+  },
+  night(S) {
+    return `<rect width="800" height="500" fill="#081f3b"/>
+    <circle cx="610" cy="96" r="60" fill="url(#glow)"/><circle cx="610" cy="96" r="17" fill="${PL}" opacity=".92"/><circle cx="603" cy="92" r="15" fill="#0b2545"/>
+    <path d="M0 232 C140 206 260 222 400 210 C540 198 690 220 800 200 V262 H0Z" fill="#0b2848" stroke="${PL}" stroke-width=".8"/>
+    <rect x="0" y="252" width="800" height="248" fill="#113a66"/>
+    <line x1="0" x2="800" y1="252" y2="252" stroke="${PL}" stroke-width="1.3"/>
+    <g class="ripples" stroke="${PL}" stroke-width="1" opacity=".5" fill="none">
+      <path d="M40 276 h90 M200 270 h130 M420 280 h70 M560 272 h150 M100 310 h150 M330 318 h110 M520 306 h80 M660 316 h100 M50 356 h100 M240 362 h170 M480 352 h130 M680 364 h70 M120 410 h160 M360 404 h100 M540 414 h180"/>
+    </g>
+    <!-- steeple tip -->
+    <path d="M356 252 V236 L372 212 L388 236 V252" fill="#123a65" stroke="${PL}" stroke-width="1.3"/><path d="M372 212 V186 M363 195 H381" stroke="${PL}" stroke-width="2"/>
+    <path d="M372 256 v40 M364 262 h16" stroke="${PL}" stroke-width="1.2" opacity=".35"/>
+    <path d="M590 258 v120" stroke="${PL}" stroke-width="10" opacity=".12"/>
+    <!-- drowned things, faint, below -->
+    <g opacity=".22" stroke="${PL}" fill="none" stroke-width="1"><path d="M300 440 v-150 l72 -40 l72 40 v150"/><path d="M120 470 v-40 l30 -18 l30 18 v40 M200 476 v-34 l26 -16 l26 16 v34 M520 470 v-44 l34 -20 l34 20 v44"/></g>
+    <g class="wl"><text x="776" y="244" text-anchor="end" class="pl-t">WATER SURFACE · EL. 412 · AS BUILT</text></g>
+    ` + frame('VII', 'THE LAKE') + finish();
+  }
+};
+function plateSVG(id, S) {
+  return `<svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Survey plate: ${id}">${DEFS}${PLATES[id](S)}</svg>`;
+}
+
+/* TENMILE — the script. Each node is a function of state S returning {plate, beats, opts}. */
+const N = t => ({ k: 'n', t });
+const P = (who, t) => ({ k: 'p', who, t });
+const V = (v, min, t) => ({ k: 'v', v, min, t });
+const FORM = t => ({ k: 'form', t });
+const ENTRY = key => ({ k: 'entry', key });
+const NOTE = t => ({ k: 'note', t });
+
+const VOICES = {
+  ledger: { name: 'The Ledger', gloss: 'Sums, statutes, the letter of the instruction. It is never wrong and seldom any help.' },
+  hand: { name: 'The Hand', gloss: 'Rope, shovel, iron. What the body knew before you took up the pen.' },
+  ear: { name: 'The Ear', gloss: 'What a person means under what they say. It hears the plate that was glued.' },
+  dog: { name: 'The Dog', gloss: 'The hair on your neck. It knows who is behind the door and it is not ashamed of anything.' },
+  preacher: { name: 'The Preacher', gloss: 'The voice that moves other men. It believes every word while it is saying it.' },
+  river: { name: 'The River', gloss: 'Not yours. It speaks from the valley floor and it has no stake in the outcome.' }
+};
+const TIMES = ['First light', 'Morning', 'Noon', 'Afternoon', 'Late afternoon', 'Dusk'];
+
+function write(S, key, name, age, note, truth) {
+  if (S.book.find(e => e.key === key)) return;
+  S.book.push({ key, name, age, note: note || '', truth: truth !== false, struck: false });
+}
+const has = (S, key) => S.book.find(e => e.key === key && !e.struck);
+const count = S => S.book.filter(e => !e.struck).length;
+const lies = S => S.book.filter(e => !e.struck && !e.truth).length + (S.f.tarr === 'off' ? 1 : 0);
+
+const STORY = {
+
+  /* ---------------- THE GRADE ---------------- */
+  grade: S => ({
+    plate: 'valley',
+    beats: [[
+      N(`You come down the grade at first light leading the mule. The road is cut into the hill and below it the valley lies in its own shadow with the river in the floor of it like a thing dropped.`),
+      N(`At the head of the valley stands the dam. It is white and it is new and nothing else in that country is either.`),
+      N(`The town is called Tenmile. Eleven roofs and a church. Smoke from one chimney.`)
+    ], [
+      N(`In the saddlebag is a ledger of the Commission and a bottle of ink and a voucher for thirty dollars which is your wage. The instructions are pasted inside the cover. You have read them in four other valleys.`),
+      FORM(`SCHEDULE C. ENUMERATION OF SOULS.\n\n1. The Enumerator shall enter every person resident in the valley on the day of the count.\n2. Each person entered is allowed forty dollars for removal.\n3. Each person entered shall be removed above the waterline by the constabulary before the gates are closed.\n4. A person not entered is not resident. The Commission has no concern with him.\n5. The gates close at dusk.`)
+    ]],
+    opts: [{ t: 'Close the book.', act: 1, go: 'grade2' }]
+  }),
+  grade2: S => ({
+    plate: 'valley',
+    beats: [[
+      N(`The mule stops in the road and will not be led. You stand with it. There is no wind yet. In the quiet you can hear them start up, the way they do when there is work ahead and nobody by.`),
+      { k: 'v', v: 'ledger', min: 0, t: `Eleven roofs. One smoke. Say five souls, seven at the outside. Two hundred dollars to two hundred eighty. We will know by noon.` },
+      { k: 'v', v: 'hand', min: 0, t: `The mule's off hind shoe is loose. You felt it a mile back and did nothing.` },
+      { k: 'v', v: 'ear', min: 0, t: `No dogs barking. A town with no dogs has left already.` },
+      { k: 'v', v: 'dog', min: 0, t: `Somebody down there is watching you. I dont know who. I know it the way you know rain.` },
+      { k: 'v', v: 'preacher', min: 0, t: `You carry the book of the living, brother. Walk like it.` },
+      { k: 'v', v: 'river', min: 0, t: `I was here before the road. I will be here over it.` }
+    ], [
+      N(`Six of them. You have never been able to hear six at once. Two of them you trust more than the rest.`),
+      NOTE(`Choose the first. A trusted voice speaks up more often and wins more of its throws.`)
+    ]],
+    opts: Object.keys(VOICES).map(k => ({ t: VOICES[k].name + '.', sub: VOICES[k].gloss, vc: k, silent: 1, do: S => { S.v[k] += 2; S.f.pick1 = k; }, go: 'grade3' }))
+  }),
+  grade3: S => ({
+    plate: 'valley',
+    beats: [[NOTE(`${VOICES[S.f.pick1].name} is with you. Choose the second.`)]],
+    opts: Object.keys(VOICES).filter(k => k !== S.f.pick1).map(k => ({ t: VOICES[k].name + '.', sub: VOICES[k].gloss, vc: k, silent: 1, do: S => { S.v[k] += 2; S.f.pick2 = k; }, go: 'grade4' }))
+  }),
+  grade4: S => ({
+    plate: 'valley',
+    beats: [[
+      NOTE(`${VOICES[S.f.pick1].name} and ${VOICES[S.f.pick2].name}. The others have not gone anywhere.`),
+      N(`The mule goes on when it is ready. You go with it.`),
+      N(`Tenmile is one street. The doors of the houses stand open and the rooms behind them are bare to the walls. Somebody has swept them.`)
+    ]],
+    opts: [{ t: 'Walk in.', act: 1, go: 'hub' }]
+  }),
+
+  /* ---------------- THE STREET (hub) ---------------- */
+  hub: S => {
+    if (S.f.raise > 0) return STORY.raise(S);
+    const o = [];
+    const done = k => S.f['done_' + k];
+    o.push({ t: done('store') ? 'The store. Hallie Oake.' : 'The store, where the smoke is.', act: 1, go: done('store') ? 'store_back' : (S.f.metWren ? 'store_in' : 'store_porch'), tag: done('store') ? 'counted' : '' });
+    if (S.f.told || done('store')) {
+      o.push({ t: 'The churchyard, on the rise.', act: 1, go: done('church') ? 'church_back' : 'church', tag: done('church') ? 'settled' : '' });
+      o.push({ t: 'The ferry.', act: 1, go: done('ferry') ? 'ferry_back' : 'ferry', tag: done('ferry') ? 'settled' : '' });
+    }
+    if (!S.f.shoe) o.push({ t: `See to the mule's shoe.`, act: 1, check: { id: 'shoe', v: 'hand', dc: 8, pass: 'shoe_ok', fail: 'shoe_bad' } });
+    if (S.f.told || done('store')) o.push({ t: 'Go up to the works and hand in the book.', act: 1, go: 'dam_ask' });
+    const lines = [];
+    if (!S.f.hubSeen) { S.f.hubSeen = 1; lines.push(N(`You stand in the street with the mule. There is the store with its one smoke. Past the last house the ground rises to a church. Below the town the river.`)); }
+    else {
+      const t = ['', `The sun is on the east wall of the valley and the street is still in shade.`, `Noon. The shadows have gone in under things.`, `The light has crossed the river. The dam throws a shadow down the valley now, a mile long.`, `The dam's shadow has reached the first houses.`, `The light is going.`][Math.min(S.t, 5)];
+      lines.push(N(`The street. ${t}`));
+      if (S.f.wrenAlong && S.t === 2) lines.push(P('WREN', `When the water comes will the fish be in the houses.`), N(`You say you expect they will.`), P('WREN', `Granny Oake swept for fish then.`));
+      if (S.f.wrenAlong && S.t === 3) lines.push(P('WREN', `How many is it now.`), N(`You tell her. ${count(S)}.`), P('WREN', `That aint many for a town.`));
+    }
+    return { plate: 'valley', beats: [lines], opts: o };
+  },
+  raise: S => ({
+    plate: 'valley',
+    beats: [[
+      N(S.f.raised ? `Coming up from the river you find you are listening harder than you were. One of them has gained on the others again.` : `Walking back up the street something has shifted in you the way a load shifts on a mule. One of them is louder than it was.`),
+      NOTE(`Raise one voice by a point.`)
+    ]],
+    opts: Object.keys(VOICES).map(k => ({ t: `${VOICES[k].name}.`, sub: `Now ${S.v[k]}. ${VOICES[k].gloss}`, vc: k, silent: 1, do: S => { S.v[k] += 1; S.f.raise -= 1; S.f.raised = 1; }, go: 'hub' }))
+  }),
+  shoe_ok: S => {
+    S.f.shoe = 'ok';
+    return {
+      plate: 'valley', beats: [[
+        N(`You lift the hoof into your lap. Two nails gone and a third backing out. You have no nails. You draw the good ones and reset them where the wall is sound and clinch them over with the back of the hoof knife and a river stone.`),
+        V('hand', 0, `It will hold to Corley. That's one true thing done today and it's not noon.`),
+        S.f.wrenAlong ? P('WREN', `He let you. He bit the Commission man.`) : N(`The mule sets the foot down and tries it and looks at nothing.`)
+      ]], opts: [{ t: 'Go on.', act: 1, go: 'hub' }]
+    };
+  },
+  shoe_bad: S => {
+    S.f.shoe = 'bad';
+    return {
+      plate: 'valley', beats: [[
+        N(`You lift the hoof into your lap. The mule lets you get settled. Then it takes the foot back and puts it down on yours.`),
+        V('hand', 0, `Eleven years of pens.`),
+        N(`You stand in the street on one leg. The shoe is as loose as it was. The mule looks at the dam.`),
+        S.f.wrenAlong ? P('WREN', `He done that to the Commission man too.`) : null
+      ]], opts: [{ t: 'Go on, limping.', act: 1, go: 'hub' }]
+    };
+  },
+
+  /* ---------------- THE STORE ---------------- */
+  store_porch: S => ({
+    plate: 'store',
+    beats: [[
+      N(`The store has a gallery and a bench. On the bench sits a girl of nine or ten with an open tin of peaches in her lap. She is eating them with her fingers. She watches you tie the mule.`),
+      P('WREN', `Are you the man that counts.`)
+    ]],
+    opts: [{ t: 'I am.', go: 'store_porch2' }, { t: 'Who says a man is coming.', go: 'store_porch2' }]
+  }),
+  store_porch2: S => {
+    S.f.metWren = 1;
+    return {
+      plate: 'store',
+      beats: [[
+        P('WREN', `Granny Oake said a man would come and count us and then they'd let the water in. She said be civil.`),
+        N(`She looks at the mule.`),
+        P('WREN', `Does he count.`)
+      ]],
+      opts: [
+        { t: `He's from outside the valley. He doesnt count.`, go: 'store_mule_a' },
+        { t: `Mules arent souls. It's in the instructions.`, go: 'store_mule_b' },
+        { t: `I'll ask him.`, go: 'store_mule_c' }
+      ]
+    };
+  },
+  store_mule_a: S => ({ plate: 'store', beats: [[P('WREN', `He's in it now.`), N(`You have no answer to that. You go in.`)]], opts: [{ t: 'Go in.', act: 1, go: 'store_in' }] }),
+  store_mule_b: S => ({ plate: 'store', beats: [[P('WREN', `Who wrote the instructions.`), N(`The Commission, you tell her.`), P('WREN', `Did they ask a mule.`)]], opts: [{ t: 'Go in.', act: 1, go: 'store_in' }] }),
+  store_mule_c: S => ({ plate: 'store', beats: [[N(`You look at the mule. The mule looks at the dam.`), P('WREN', `He dont know either.`)]], opts: [{ t: 'Go in.', act: 1, go: 'store_in' }] }),
+
+  store_in: S => ({
+    plate: 'store',
+    beats: [[
+      N(`Inside the shelves are near bare. A woman stands on a crate taking down the last of the lamp chimneys and wrapping each one in newspaper. She doesnt turn around.`),
+      P('HALLIE', `Coffee's on the stove. I aint selling it. I quit selling Tuesday. Take what you want, there's not much left that's worth the carrying.`),
+      V('hand', 2, `Tin cup on a nail by the stove. The coffee has been boiled twice. Drink it anyway.`),
+      N(`You set the ledger on the counter and open it and draw the cork from the ink. She hears the cork and comes down off the crate.`),
+      P('HALLIE', `Hallie Oake. Sixty-one. Born in that back room and I'd as soon you wrote that too but I dont guess there's a column for it.`)
+    ]],
+    opts: [{ t: 'Write her down.', act: 1, do: S => write(S, 'hallie', 'Hallie Oake', 61, 'storekeeper'), go: 'store_in2' }]
+  }),
+  store_in2: S => ({
+    plate: 'store',
+    beats: [[
+      N(`There is not a column for it.`),
+      ENTRY('hallie'),
+      P('HALLIE', `And the girl. Wren Oake. Nine.`),
+      V('ear', 2, `She set that second name down careful. Like a plate she'd glued.`),
+      N(`From the doorway behind you:`),
+      P('WREN', `It's Tolliver.`),
+      P('HALLIE', `Hush.`),
+      P('WREN', `Well it is.`)
+    ]],
+    opts: [{ t: 'Which is it.', go: 'store_wren' }]
+  }),
+  store_wren: S => ({
+    plate: 'store',
+    beats: [[
+      P('HALLIE', `Her people went out in April with a wagon and six children and when they got to the top of the grade they had five. I dont say they meant it. Nobody come back.`),
+      P('HALLIE', `You write Tolliver and the county has her in the home at Ansel by Sunday. You write Oake and she goes with me to my sister's in Corley and nobody looks at her twice.`),
+      V('ledger', 0, `The instruction says every person resident. It doesnt say under what name. That's a thin place in the paper and you know it's thin.`),
+      V('preacher', 2, `A false name in the book of the living. A small one. They are always small at first.`)
+    ]],
+    opts: STORY._wrenOpts(S)
+  }),
+  _wrenOpts: S => [
+    { t: 'Write: Wren Oake, 9.', act: 1, do: S => { write(S, 'wren', 'Wren Oake', 9, 'ward of H. Oake', false); S.f.wren = 'oake'; }, go: 'store_wren_oake' },
+    { t: 'Write: Wren Tolliver, 9.', act: 1, do: S => { write(S, 'wren', 'Wren Tolliver', 9, 'no kin present'); S.f.wren = 'tolliver'; }, go: 'store_wren_tol' },
+    { t: 'Wren. What do you say.', check: { id: 'askwren', v: 'ear', dc: 8, pass: 'store_wren_ask_ok', fail: 'store_wren_ask_no' } }
+  ],
+  store_wren_ask_ok: S => ({
+    plate: 'store',
+    beats: [[
+      N(`You dont look at the woman when you ask it. You look at the girl and you wait.`),
+      P('WREN', `I dont care what I'm called. I aint going to Ansel. Addie Purdy went to Ansel and when we seen her again they'd cut her hair off.`),
+      V('ear', 0, `Nobody gave her that to say. That's her own.`)
+    ]],
+    opts: STORY._wrenOpts(S).slice(0, 2)
+  }),
+  store_wren_ask_no: S => ({
+    plate: 'store',
+    beats: [[
+      N(`The girl shrugs and eats a peach.`),
+      V('ear', 0, `Nine years old and asked in front of the woman who feeds her. She's not going to hand you anything.`)
+    ]],
+    opts: STORY._wrenOpts(S).slice(0, 2)
+  }),
+  store_wren_oake: S => ({
+    plate: 'store',
+    beats: [[
+      ENTRY('wren'),
+      N(`The woman watches the pen. When it stops she lets her breath go.`),
+      P('HALLIE', `I'll not thank you. If I thank you it's a thing we did.`)
+    ]],
+    opts: [{ t: 'Blot the line.', act: 1, go: 'store_talk' }]
+  }),
+  store_wren_tol: S => ({
+    plate: 'store',
+    beats: [[
+      ENTRY('wren'),
+      P('HALLIE', `Well. It's her name.`),
+      N(`She goes back to the chimneys. She wraps one and then stands holding it.`),
+      P('WREN', `Told you.`)
+    ]],
+    opts: [{ t: 'Blot the line.', act: 1, go: 'store_talk' }]
+  }),
+  store_talk: S => {
+    const o = [];
+    const a = S.f;
+    if (!a.told) o.push({ t: 'Who else is left in the valley.', go: 'store_who' });
+    if (a.told && !a.knowLyle) {
+      if (a.slip) o.push({ t: 'You answered about the mill before I asked about the mill.', go: 'store_mill' });
+      else o.push({ t: `Tell me again who's across the river.`, check: { id: 'hallie_mill', v: 'ear', dc: 9, pass: 'store_mill', fail: 'store_mill_no' } });
+    }
+    if (!a.qSwept) o.push({ t: 'Somebody swept the empty houses.', go: 'store_swept' });
+    if (!a.qCorley) o.push({ t: 'What will you do in Corley.', go: 'store_corley' });
+    if (!a.qDam) o.push({ t: 'What do they say the dam is for.', go: 'store_dam' });
+    if (a.told) o.push({ t: 'Cork the ink and go.', act: 1, go: a.wrenAsked ? 'store_exit' : 'store_leave' });
+    return { plate: 'store', beats: [[N(a.talked ? `She wraps another chimney.` : `She pours you the coffee herself after all and stands with her arms folded while you drink it.`)]], opts: (a.talked = 1, o) };
+  },
+  store_who: S => {
+    S.f.told = 1;
+    if (S.v.dog >= 2 || S.v.ledger >= 2) S.f.slip = 1;
+    return {
+      plate: 'store',
+      beats: [[
+        P('HALLIE', `Odile Vance is up at the churchyard, and you go easy up there. Abel Tarr's down at the ferry and you wont move him. That's the town. There's nobody across the river. Mill's been shut since spring.`),
+        V('dog', 2, `You didnt ask her about across the river.`),
+        V('ledger', 2, `One smoke. Two women, a child, an old man. Then who is she baking for. There are four loaf tins drying on that sill.`)
+      ]],
+      opts: [{ t: 'Nod.', act: 1, go: 'store_talk' }]
+    };
+  },
+  store_mill: S => {
+    S.f.knowMill = 1; S.f.knowLyle = 1;
+    return {
+      plate: 'store',
+      beats: [[
+        N(`She puts the lamp chimney down on the counter. She does it slowly so it wont ring.`),
+        P('HALLIE', `It's my sister's boy. Lyle. He come in the night nine days back and I put him in the mill. I been sending bread over with Abel.`),
+        P('HALLIE', `He done something in Ansel. I never asked what. I didnt want to have been told.`),
+        P('HALLIE', `You could just not go over there. The book says resident. He aint resident. He's only there.`),
+        V('ledger', 0, `Nine days. The instruction gives no term for resident. You have seen men counted on less.`)
+      ]],
+      opts: [{ t: 'Say nothing to that.', act: 1, go: 'store_talk' }]
+    };
+  },
+  store_mill_no: S => ({
+    plate: 'store',
+    beats: [[
+      P('HALLIE', `There's a mill across the river. It's shut. I said so.`),
+      N(`She wraps a chimney and sets it in the crate with the others. That is all you will get here.`)
+    ]],
+    opts: [{ t: 'Let it lie.', act: 1, go: 'store_talk' }]
+  }),
+  store_swept: S => {
+    S.f.qSwept = 1;
+    return {
+      plate: 'store', beats: [[
+        P('HALLIE', `Somebody ought to.`),
+        N(`You ask her why.`),
+        P('HALLIE', `You dont leave a place dirty.`),
+        V('river', 2, `She swept them for me. I will be in every one of those rooms by Thursday. I have no feeling about floors.`)
+      ]], opts: [{ t: 'Drink the coffee.', act: 1, go: 'store_talk' }]
+    };
+  },
+  store_corley: S => {
+    S.f.qCorley = 1;
+    return {
+      plate: 'store', beats: [[
+        P('HALLIE', `Sit in my sister's kitchen and be told where things are kept.`),
+        V('ear', 2, `Sixty-one years she has known where everything was kept.`)
+      ]], opts: [{ t: 'Drink the coffee.', act: 1, go: 'store_talk' }]
+    };
+  },
+  store_dam: S => {
+    S.f.qDam = 1;
+    return {
+      plate: 'store', beats: [[
+        P('HALLIE', `Lights for the cities. I been to a city once. They had enough lights.`)
+      ]], opts: [{ t: 'Drink the coffee.', act: 1, go: 'store_talk' }]
+    };
+  },
+  store_leave: S => {
+    S.f.wrenAsked = 1;
+    return {
+      plate: 'store',
+      beats: [[
+        N(`You cork the ink. The girl is standing at your elbow.`),
+        P('WREN', `I can carry that.`),
+        P('HALLIE', `She'll follow you anyhow. She's like a burr.`)
+      ]],
+      opts: [
+        { t: 'Carry it level.', do: S => { S.f.wrenAlong = 1; }, go: 'store_exit' },
+        { t: 'Stay with your granny.', go: 'store_stay' }
+      ]
+    };
+  },
+  store_stay: S => ({
+    plate: 'store', beats: [[P('WREN', `She aint my granny. I just call her it.`), N(`She goes back out to the bench and the peaches.`)]],
+    opts: [{ t: 'Go out.', act: 1, go: 'store_exit' }]
+  }),
+  store_exit: S => {
+    if (!S.f.done_store) { S.f.done_store = 1; S.t = Math.max(S.t, 1); S.f.raise = (S.f.raise || 0) + 1; }
+    return STORY.hub(S);
+  },
+  store_back: S => ({
+    plate: 'store',
+    beats: [[
+      N(`The crate of lamp chimneys is full and nailed shut. She is sitting on it.`),
+      P('HALLIE', S.f.done_church && S.f.done_ferry ? `You seen them all then. Go on up. Dont stand in here on my account.` : `You aint done. I can see the dam from here and I can see you.`),
+      !S.f.wrenAlong && !S.f.done_ferry ? P('WREN', `I can still carry the ink.`) : null
+    ]],
+    opts: [
+      (!S.f.wrenAlong && !S.f.done_ferry) ? { t: 'Come on then. Carry it level.', do: S => { S.f.wrenAlong = 1; }, go: 'hub' } : null,
+      (S.f.told && !S.f.knowLyle && S.f.slip) ? { t: 'You answered about the mill before I asked about the mill.', go: 'store_mill' } : null,
+      { t: 'Go out.', act: 1, go: 'hub' }
+    ].filter(Boolean)
+  }),
+
+  /* ---------------- THE CHURCHYARD ---------------- */
+  church: S => ({
+    plate: 'church',
+    beats: [[
+      N(`The church stands on the one rise in the valley floor and it will be the last roof to go under. The bell is gone from it already. In the yard a woman is waist deep in a hole with a shovel, and on the grass beside the hole a wooden marker lies where she has pulled it and laid it flat.`),
+      S.f.wrenAlong ? P('WREN', `That's Miz Vance. That's Tommy she's digging. He had the fever.`) : null,
+      N(`She goes on digging while you come up. By the spoil she has been at it since before light. Under the first foot the ground is clay and she is cutting it out in pieces the size of loaves.`),
+      P('ODILE', `You're the count.`)
+    ]],
+    opts: [{ t: 'I am.', go: 'church2' }]
+  }),
+  church2: S => ({
+    plate: 'church',
+    beats: [[
+      P('ODILE', `Odile Vance. Twenty-six. My husband is Carl Vance and he's on the dam works since winter. He's on their book up there. Dont put him on yours.`)
+    ]],
+    opts: [{ t: 'Write her down.', act: 1, do: S => write(S, 'odile', 'Odile Vance', 26, 'husband at the works'), go: 'church3' }]
+  }),
+  church3: S => ({
+    plate: 'church',
+    beats: [[
+      ENTRY('odile'),
+      P('ODILE', `And Thomas Vance. Four.`),
+      N(`She has stopped digging. She is looking at the marker on the grass.`)
+    ]],
+    opts: [{ t: 'Where is he.', go: 'church4' }, { t: `That's the boy in the ground.`, go: 'church4' }]
+  }),
+  church4: S => ({
+    plate: 'church',
+    beats: [[
+      P('ODILE', `He's right here. He's resident. He's been resident since March and he aint missed a day.`),
+      V('preacher', 2, `The dead are not souls resident, sister. They are souls departed. The whole edifice rests on the distinction.`),
+      V('ear', 2, `Dont say that to her.`)
+    ], [
+      P('ODILE', `There was a paper nailed up at the store in June about moving graves. You had to put your name to it by the first of July. I cant read. Nobody said.`),
+      P('ODILE', `Now the Commission man says the list is shut and what's in the ground stays in the ground. The carter at Corley wants thirty dollars to haul a box that size up the grade and bury it at the top. I got four.`),
+      P('ODILE', `So you write him. Thomas Vance, four. That's forty dollars. Thirty for the carter and ten for a stone.`)
+    ]],
+    opts: STORY._odileOpts(S)
+  }),
+  _odileOpts: S => {
+    const o = [];
+    o.push({ t: 'Write: Thomas Vance, 4.', act: 1, do: S => { write(S, 'thomas', 'Thomas Vance', 4, 'son of O. Vance', false); S.f.odile = 'wrote'; }, go: 'church_wrote' });
+    o.push({ t: 'Look in the instructions for what they say about graves.', act: 1, check: { id: 'sec14', v: 'ledger', dc: 11, pass: 'church_sec14', fail: 'church_sec14_no' } });
+    if (S.money >= 30) o.push({ t: 'Give her your voucher. Thirty dollars, payable to bearer.', act: 1, do: S => { S.money = 0; S.f.odile = 'voucher'; }, go: 'church_voucher' });
+    if (!S.f.dug) o.push({ t: 'Get down in the hole and dig.', act: 1, check: { id: 'dig', v: 'hand', dc: 8, red: 1, pass: 'church_dig', fail: 'church_dig_no' } });
+    o.push({ t: 'I cant write the dead.', do: S => { S.f.odile = 'refused'; }, go: 'church_refuse' });
+    return o;
+  },
+  church_wrote: S => ({
+    plate: 'church',
+    beats: [[
+      ENTRY('thomas'),
+      N(`You write it under hers. The ink takes the same as it did for the living.`),
+      P('ODILE', `Read it to me.`),
+      N(`You read it to her. Thomas Vance. Four. Son of O. Vance.`),
+      P('ODILE', `That's right. That's him.`),
+      N(`She takes up the shovel.`),
+      V('ledger', 2, `The sergeant carried the fever returns out of this valley in March. If he reads as well as he rides you'll answer for that line.`)
+    ]],
+    opts: [{ t: 'Leave her to it.', act: 1, go: 'church_exit' }]
+  }),
+  church_sec14: S => {
+    S.f.odile = 'cert';
+    return {
+      plate: 'church',
+      beats: [[
+        N(`You sit on the church step and go through the back of the book where nobody goes. Section fourteen. Interments.`),
+        FORM(`14(c). Where notice was not had by reason of infirmity or want of letters, the Enumerator may certify the claim late upon his own hand, and the remains shall be removed at the charge of the Commission.`),
+        V('ledger', 0, `You have carried that sentence through four valleys and never used it. It's in there because some clerk had a mother.`),
+        N(`You write the certificate on the facing page and sign it and read it out to her. Two men and a wagon, at the Commission's cost. A plot at Corley. She listens to all of it.`),
+        P('ODILE', `It was in the book the whole time.`),
+        N(`You tell her it was.`),
+        P('ODILE', `And the man they sent in June never said.`),
+        N(`She takes up the shovel. She is not going to stop digging on the strength of a paper and you dont ask her to.`)
+      ]],
+      opts: [{ t: 'Leave her to it.', act: 1, go: 'church_exit' }]
+    };
+  },
+  church_sec14_no: S => ({
+    plate: 'church',
+    beats: [[
+      N(`You sit on the church step and go through the back of the book. There is a section on interments. You read it twice. Something about notice. Something about the first of July.`),
+      V('ledger', 0, `I cant make it hold still. If you write what you cant swear to they will void the page and everyone on it.`),
+      N(`She has watched you read. She knows what a man looks like who has not found it.`)
+    ]],
+    opts: STORY._odileOpts(S)
+  }),
+  church_voucher: S => ({
+    plate: 'church',
+    beats: [[
+      N(`You take the voucher from the back of the ledger and hold it down to her. She doesnt reach for it.`),
+      P('ODILE', `I dont take from strangers.`),
+      N(`You tell her it's not from you. It's from the Commission. They just dont know it yet.`),
+      N(`She looks at the paper a while. Then she wipes her hand on her skirt and takes it by the corner and puts it inside her dress.`),
+      P('ODILE', `What does it say on it.`),
+      N(`Thirty dollars. Pay to the bearer.`),
+      P('ODILE', `Bearer. That's me.`),
+      V('ledger', 0, `That was your wage for this valley. I only note it.`)
+    ]],
+    opts: [{ t: 'Leave her to it.', act: 1, go: 'church_exit' }]
+  }),
+  church_dig: S => {
+    S.f.dug = 'yes';
+    return {
+      plate: 'church',
+      beats: [[
+        N(`You take off your coat and get down in the hole. She doesnt say anything and she doesnt move over much. You take the shovel and she takes the bar.`),
+        V('hand', 0, `Cut the clay square. Lift with the legs. This you know. It's the one thing today nobody can argue with.`),
+        S.f.wrenAlong ? N(`The girl sits on the spoil heap holding the ink in both hands, level, as she was told.`) : null
+      ], [
+        N(`In an hour the blade knocks on wood. You clear it with your hands, the two of you. A box of pine boards and it is sound.`),
+        N(`You lift it out between you. It weighs almost nothing. That is the part your hands had not got ready for.`),
+        P('ODILE', `His daddy built that. He planed it inside. He said no splinters.`),
+        N(`She sets it on the grass by the marker and stands looking at you. The matter of the book has not gone anywhere.`)
+      ]],
+      opts: STORY._odileOpts(S)
+    };
+  },
+  church_dig_no: S => {
+    S.f.dug = 'broke';
+    return {
+      plate: 'church',
+      beats: [[
+        N(`You take off your coat and get down in the hole and she hands you the shovel. The clay turns the blade. You put your weight on it and the handle goes at the neck.`),
+        N(`You stand there holding a stick.`),
+        P('ODILE', `That was the only shovel in Tenmile.`),
+        V('hand', 0, `Eleven years of pens.`),
+        N(`She fishes the blade out of the hole and goes on with it short, on her knees. You climb out. The matter of the book has not gone anywhere.`)
+      ]],
+      opts: STORY._odileOpts(S)
+    };
+  },
+  church_refuse: S => ({
+    plate: 'church',
+    beats: [[
+      N(`She looks at you from the hole. She is not angry. She is working something out.`),
+      P('ODILE', `You write down who's here. And then they pay for who's wrote down. And he's here and you wont write it.`),
+      P('ODILE', `Then what are you for.`),
+      N(`She doesnt wait on an answer. She takes up the shovel.`),
+      V('river', 2, `I'd have kept him. I keep whatever is left. She doesnt want him kept by me, and I cant tell you she's wrong.`)
+    ]],
+    opts: [{ t: 'Go down off the rise.', act: 1, go: 'church_exit' }]
+  }),
+  church_exit: S => {
+    if (!S.f.done_church) { S.f.done_church = 1; S.t = Math.min(4, S.t + 1); if (S.f.done_ferry) S.f.raise = (S.f.raise || 0) + 1; }
+    return STORY.hub(S);
+  },
+  church_back: S => ({
+    plate: 'church',
+    beats: [[
+      N(S.f.dug === 'yes' ? `The box is on the grass with her shawl laid over it. She is filling the hole back in. You dont know why and you dont ask.` : `She is still digging. The hole is deeper and so is the heap. She doesnt look up.`),
+      S.f.odile === 'refused' ? P('ODILE', `You come to tell me different.`) : null
+    ]],
+    opts: [
+      (S.f.odile === 'refused' && S.money >= 30) ? { t: 'Give her your voucher. Thirty dollars, payable to bearer.', act: 1, do: S => { S.money = 0; S.f.odile = 'voucher'; }, go: 'church_voucher' } : null,
+      (S.f.odile === 'refused') ? { t: 'Look again in the instructions for what they say about graves.', act: 1, check: { id: 'sec14', v: 'ledger', dc: 11, pass: 'church_sec14', fail: 'church_sec14_back' } } : null,
+      { t: 'Go down off the rise.', act: 1, go: 'hub' }
+    ].filter(Boolean)
+  }),
+  church_sec14_back: S => ({
+    plate: 'church',
+    beats: [[N(`You read the section again on the church step. It is no clearer than it was.`)]],
+    opts: [{ t: 'Go down off the rise.', act: 1, go: 'hub' }]
+  }),
+
+  /* ---------------- THE FERRY ---------------- */
+  ferry: S => ({
+    plate: 'ferry',
+    beats: [[
+      N(`The river is half what it was. They have had the gates part shut a month to try the works and the water has drawn off from its banks and left a skirt of grey mud with the track of every bird in it.`),
+      N(`The ferry is a flat scow on a cable. An old man sits on the deck of it with a length of rope in his hands, splicing an eye into the end. Behind him his house stands ten feet above the water with a chair on the porch faced at the river.`),
+      S.f.wrenAlong ? P('WREN', `Mr Tarr this is the man that counts.`) : null,
+      P('TARR', `I know what he is. He can save his ink.`)
+    ], [
+      P('TARR', `Abel Tarr. Seventy and some. I quit keeping it. I'm telling you that to be civil. I aint asking in.`),
+      P('TARR', `I run this crossing fifty-one years. My daddy strung that cable. I been over this river more times than you have drawn breath and I never been across anything else.`),
+      P('TARR', `You put me in that book and Dace's boys come down here and carry me up the grade like a sack of meal. I seen it done to the Purdys. Then I sit in a room in Corley with a window that looks on a wall.`),
+      P('TARR', `You leave me out and I aint here. Book says so. Man that aint here cant be moved.`)
+    ]],
+    opts: [{ t: 'The water will come over that house.', go: 'ferry2' }, { t: 'What is the rope for.', go: 'ferry_rope' }]
+  }),
+  ferry_rope: S => ({
+    plate: 'ferry',
+    beats: [[
+      P('TARR', `It's for nothing. It's a splice. I'd as soon my hands had something.`),
+      V('hand', 2, `That's a long splice and he's doing it by feel. Dont watch a man work and then tell him his business.`)
+    ]],
+    opts: [{ t: 'The water will come over that house.', go: 'ferry2' }]
+  }),
+  ferry2: S => ({
+    plate: 'ferry',
+    beats: [[
+      P('TARR', `I know what water does. I worked for it all my life. I reckon it can have me. It's owed.`),
+      V('river', 2, `I am not owed. I keep no accounts. That is his word for it. I will take him the same as I take the chair.`),
+      V('ear', 2, `He's not grieving. Listen to him. He's finished. From across a room the two sound alike.`)
+    ], [
+      N(`He draws the splice tight with his teeth and looks at you for the first time.`),
+      P('TARR', `You done this in other valleys. Somebody has asked you this before.`)
+    ]],
+    opts: [
+      { t: 'A man at Sabra. I left him off the book. They found him in April in a tree.', do: S => { S.f.past = 'left'; }, go: 'ferry_past' },
+      { t: 'A woman at Sabra. I wrote her down. They carried her out. She was dead in the county home by Christmas.', do: S => { S.f.past = 'wrote'; }, go: 'ferry_past' },
+      { t: 'Nobody asked.', do: S => { S.f.past = 'none'; }, go: 'ferry_past' }
+    ]
+  }),
+  ferry_past: S => ({
+    plate: 'ferry',
+    beats: [[
+      S.f.past === 'left' ? P('TARR', `And here you are with the book again.`) : S.f.past === 'wrote' ? P('TARR', `Then you know what the room is.`) : P('TARR', `Then you been lucky or you been deaf.`),
+      S.f.past !== 'none' ? V('ear', 0, `You have not said that out loud before. Not to anyone.`) : V('dog', 0, `He knows you lied. He's let it go by. Old men do.`),
+      N(`He waits. The river goes by under the scow with a sound like something being poured from one vessel to another.`)
+    ]],
+    opts: STORY._tarrOpts(S)
+  }),
+  _tarrOpts: S => {
+    const o = [];
+    const mods = [['The girl is standing there', 1, !!S.f.wrenAlong], ['You told him about Sabra', 1, S.f.past && S.f.past !== 'none'], ['You pulled his cable with him', 1, S.f.cable === 'ok']];
+    const emods = mods.concat([['The river told you what to ask', 2, S.f.ice === 1]]);
+    o.push({ t: 'Write: Abel Tarr, 70.', act: 1, do: S => { write(S, 'tarr', 'Abel Tarr', 70, 'ferryman'); S.f.tarr = 'wrote'; }, go: 'ferry_wrote' });
+    o.push({ t: 'Close the book. Leave him off it.', act: 1, do: S => { S.f.tarr = 'off'; }, go: 'ferry_off' });
+    o.push({ t: 'Tell him why a man walks up a hill.', check: { id: 'tarr_pr', v: 'preacher', dc: 12, red: 1, mods, pass: 'ferry_walk_pr', fail: 'ferry_walk_pr_no' } });
+    o.push({ t: 'Ask him about the river. Then be quiet.', check: { id: 'tarr_ear', v: 'ear', dc: 11, red: 1, mods: emods, pass: 'ferry_walk_ear', fail: 'ferry_walk_ear_no' } });
+    if (!S.f.ice) o.push({ t: 'Kneel and put your hand in the river.', act: 1, check: { id: 'ice', v: 'river', dc: 9, red: 1, pass: 'ferry_ice', fail: 'ferry_ice_no' } });
+    if (!S.f.crossed) o.push({ t: 'Carry me over first. I have to see the far bank.', go: 'ferry_cross' });
+    return o;
+  },
+  ferry_wrote: S => ({
+    plate: 'ferry',
+    beats: [[
+      ENTRY('tarr'),
+      N(`He watches you write it. He cant read it from there and he doesnt need to.`),
+      P('TARR', `Well.`),
+      N(`He lays the rope down on the deck in a coil and squares the coil with his foot.`),
+      P('TARR', `I'll still carry you over if you're going. I aint quitting work on your account.`),
+      S.f.wrenAlong ? P('WREN', `Are they going to carry him.`) : null,
+      S.f.wrenAlong ? N(`You tell her yes. She looks at you a good while and then she looks at the ink.`) : null
+    ]],
+    opts: STORY._ferryAfter(S)
+  }),
+  ferry_off: S => ({
+    plate: 'ferry',
+    beats: [[
+      N(`You close the book. He nods once. There is no thanks in it. It is how a man nods at a price.`),
+      P('TARR', `When they ask you, you never seen me. I was gone when you come. The chair was empty.`),
+      V('ledger', 0, `One soul short and you know which. The count is the count. It's the only thing I ever asked you to keep.`),
+      V('river', 2, `Third morning. It will be at the porch boards by the third morning.`),
+      S.f.wrenAlong ? P('WREN', `You didnt write him.`) : null,
+      S.f.wrenAlong ? P('TARR', `He wrote me, child. You never seen. Go look at the mud, there's a heron been in it.`) : null
+    ]],
+    opts: STORY._ferryAfter(S)
+  }),
+  ferry_walk_pr: S => {
+    S.f.tarr = 'walk'; write(S, 'tarr', 'Abel Tarr', 70, 'ferryman. Goes on his own feet');
+    return {
+      plate: 'ferry',
+      beats: [[
+        N(`You tell him that a man who is carried has been moved and a man who walks has gone. You tell him they are going to write this valley down as empty by dark and it wont be true if he is sitting in it, and nobody will know it wasnt true. You tell him the Commission would like nothing better than for the last man in Tenmile to be a thing the water did.`),
+        V('preacher', 0, `There. I didnt lie to him once. I want that noted.`),
+        N(`He is quiet a long time.`),
+        P('TARR', `I aint going to be carried.`),
+        N(`You tell him then he had better walk.`),
+        P('TARR', `You write that. In the book. Goes on his own feet.`),
+        ENTRY('tarr')
+      ]],
+      opts: STORY._ferryAfter(S)
+    };
+  },
+  ferry_walk_pr_no: S => ({
+    plate: 'ferry',
+    beats: [[
+      N(`You tell him about dignity and about the years he has left and somewhere in it you hear yourself say the word opportunity.`),
+      P('TARR', `You talk like the Commission man. He had a better coat.`),
+      V('preacher', 0, `It was a sound argument. The man is stone.`),
+      N(`He picks the rope back up. The book is still open on your knee.`)
+    ]],
+    opts: STORY._tarrOpts(S)
+  }),
+  ferry_walk_ear: S => {
+    S.f.tarr = 'walk'; write(S, 'tarr', 'Abel Tarr', 70, 'ferryman. Goes on his own feet');
+    return {
+      plate: 'ferry',
+      beats: [[
+        N(`You dont argue it. You ask him what the river did in the worst year he saw.`),
+        P('TARR', `Nineteen and four. The ice.`),
+        N(`He tells it. The ice came down in March in pans the size of a threshing floor and took the cable and the scow and the Purdys' barn. He names the men who strung the new cable and which of them drowned after and where. He tells you where the old ford was before there was a ferry, by a rock that isnt there now. It takes a while. You dont say anything.`)
+      ], [
+        N(`He stops.`),
+        P('TARR', `There aint nobody knows that but me.`),
+        V('ear', 0, `He heard it. Dont touch it. Let him pick it up himself.`),
+        P('TARR', `If I go under with it then it never was a crossing. It's a place in a lake.`),
+        N(`He looks at the rope in his hands and then lays it down.`),
+        P('TARR', `I aint going to be carried. You write that. Goes on his own feet.`),
+        ENTRY('tarr')
+      ]],
+      opts: STORY._ferryAfter(S)
+    };
+  },
+  ferry_walk_ear_no: S => ({
+    plate: 'ferry',
+    beats: [[
+      N(`You ask him about the river. He looks at you.`),
+      P('TARR', `It's wet. It goes that way.`),
+      V('ear', 0, `He heard you coming. You asked it like a man reaching for a latch.`),
+      N(`The book is still open on your knee.`)
+    ]],
+    opts: STORY._tarrOpts(S)
+  }),
+  ferry_ice: S => {
+    S.f.ice = 1;
+    return {
+      plate: 'ferry',
+      beats: [[
+        N(`You kneel on the deck and put your hand over the side. The water is colder than the day has any right to.`),
+        V('river', 0, `Ask him about the ice. Nineteen and four. I took his father's cable that year and the scow and three men. He has not told it in thirty years. It's in him yet like a stone in a boot.`),
+        N(`You take your hand out and dry it on your coat. The old man is watching you.`),
+        P('TARR', `You wont find nothing in there. I looked.`)
+      ]],
+      opts: STORY._tarrOpts(S)
+    };
+  },
+  ferry_ice_no: S => {
+    S.f.ice = 2;
+    return {
+      plate: 'ferry',
+      beats: [[
+        N(`You kneel on the deck and put your hand over the side. The water is cold. It goes between your fingers and on down the valley.`),
+        V('river', 0, `You want something of me. Everyone in this valley has wanted something of me. I am water.`),
+        P('TARR', `You wont find nothing in there. I looked.`)
+      ]],
+      opts: STORY._tarrOpts(S)
+    };
+  },
+  _ferryAfter: S => {
+    const o = [];
+    if (!S.f.crossed) o.push({ t: 'Carry me over.', go: 'ferry_cross' });
+    o.push({ t: 'Go back up to the street.', act: 1, go: 'ferry_exit' });
+    return o;
+  },
+  ferry_cross: S => {
+    S.f.crossed = 1; S.f.knowMill = 1;
+    return {
+      plate: 'ferry',
+      beats: [[
+        N(`He casts off without getting up. The scow swings out on its traveller and the current takes the upstream corner and the cable comes taut overhead and hums.`),
+        P('TARR', `She wants pulling now the water's low. There aint the push there was.`),
+        S.f.wrenAlong ? N(`The girl sits in the bow with the ink between her knees and trails her free hand in the river.`) : null,
+        N(`He stands and takes the cable in both hands and leans.`)
+      ]],
+      opts: [
+        { t: 'Take hold of the cable behind him.', act: 1, check: { id: 'cable', v: 'hand', dc: 8, red: 1, pass: 'ferry_cable', fail: 'ferry_cable_no' } },
+        { t: 'Stand clear and let him work.', act: 1, go: 'ferry_far' }
+      ]
+    };
+  },
+  ferry_cable: S => {
+    S.f.cable = 'ok';
+    return {
+      plate: 'ferry', beats: [[
+        N(`You take hold behind him and lean when he leans. The wire is cold and it has a grease on it older than you are. The scow walks out into the river.`),
+        V('hand', 0, `Hand over hand. Dont snatch at it. There.`),
+        P('TARR', `You've pulled rope.`),
+        N(`It's the first thing he has said to you that was not a warning.`)
+      ]], opts: [{ t: 'Land on the far bank.', act: 1, go: 'ferry_far' }]
+    };
+  },
+  ferry_cable_no: S => {
+    S.f.cable = 'bad';
+    return {
+      plate: 'ferry', beats: [[
+        N(`You take hold behind him. There is a broken strand in the wire and it opens your palm from the heel to the first finger.`),
+        V('hand', 0, `You held it like a pen.`),
+        P('TARR', `There's a meathook in her about there. I'd have said.`),
+        N(`You stand clear with your hand shut on your handkerchief and he takes the scow over alone as he has every other day.`)
+      ]], opts: [{ t: 'Land on the far bank.', act: 1, go: 'ferry_far' }]
+    };
+  },
+  ferry_far: S => ({
+    plate: 'ferry',
+    beats: [[
+      N(`The scow grounds in the mud of the far landing. A path goes up through dead cane toward a stone building with a wheel.`),
+      P('TARR', `I carried a man over nine nights back and I aint carried him home. Hallie sends him bread. I never asked.`),
+      P('TARR', `He's got a pistol. I seen the shape of it in his coat. You do what you want with that.`),
+      V('dog', 2, `There he is. That's who was watching from the grade this morning. I told you.`)
+    ]],
+    opts: [
+      { t: 'Go up to the mill.', act: 1, go: S.f.lyle ? 'mill_back' : 'mill' },
+      { t: 'Have him carry you back.', act: 1, go: 'ferry_return' }
+    ]
+  }),
+  ferry_return: S => ({
+    plate: 'ferry',
+    beats: [[
+      N(`He takes you back over. The cable hums. On the home bank he makes the scow fast with two turns and sits down where he was.`),
+      !S.f.tarr ? P('TARR', `Well. You seen the far bank. You still got that book open.`) : null
+    ]],
+    opts: !S.f.tarr ? STORY._tarrOpts(S) : [{ t: 'Go back up to the street.', act: 1, go: 'ferry_exit' }]
+  }),
+  ferry_exit: S => {
+    if (!S.f.done_ferry) { S.f.done_ferry = 1; S.t = Math.min(4, S.t + 1); if (S.f.done_church) S.f.raise = (S.f.raise || 0) + 1; }
+    return STORY.hub(S);
+  },
+  ferry_back: S => ({
+    plate: 'ferry',
+    beats: [[
+      S.f.tarr === 'walk' ? N(`He has the ferry bell down off its post and is wrapping it in a shirt.`) : S.f.tarr === 'off' ? N(`He is in the chair on the porch. He doesnt look at you. He never seen you.`) : N(`He is on the deck of the scow with the rope.`),
+      S.f.tarr === 'walk' ? P('TARR', `Fifty-one years I rung that for fog. I aint leaving it for the carp.`) : null
+    ]],
+    opts: [
+      (S.f.tarr !== 'off') ? { t: 'Carry me over.', go: 'ferry_cross2' } : null,
+      { t: 'Go back up to the street.', act: 1, go: 'hub' }
+    ].filter(Boolean)
+  }),
+  ferry_cross2: S => {
+    S.f.crossed = 1; S.f.knowMill = 1;
+    return { plate: 'ferry', beats: [[N(`He takes you over. Neither of you says anything. The cable hums.`)]], opts: [{ t: 'Go up to the mill.', act: 1, go: S.f.lyle ? 'mill_back' : 'mill' }, { t: 'Have him carry you back.', act: 1, go: 'ferry_return' }] };
+  },
+
+  /* ---------------- THE MILL ---------------- */
+  mill: S => ({
+    plate: 'mill',
+    beats: [[
+      N(`The mill is stone to the eaves. The wheel hangs in the dry race with weeds grown up through it. The door is shut. On the step is a tin plate with crumbs on it.`),
+      V('dog', 2, `He's in there. He's standing just to the left of the door, where you'd stand.`)
+    ]],
+    opts: [
+      S.f.wrenAlong ? { t: 'Let the girl call him.', act: 1, go: 'mill_wren' } : null,
+      { t: 'Knock, and say what you are.', act: 1, go: 'mill_knock' },
+      { t: 'Go round the back, quiet.', act: 1, check: { id: 'sneak', v: 'dog', dc: 9, red: 1, pass: 'mill_sneak', fail: 'mill_sneak_no' } },
+      { t: 'Leave it. Go back to the ferry.', act: 1, go: 'mill_leave' }
+    ].filter(Boolean)
+  }),
+  mill_leave: S => ({
+    plate: 'mill',
+    beats: [[N(`You stand a minute looking at the plate on the step. Then you go back down through the cane.`), V('ledger', 0, `A man is in that building or he is not. You have chosen not to know. The book cant tell the difference and neither will the water.`)]],
+    opts: [{ t: 'Have him carry you back.', act: 1, go: 'ferry_return' }, { t: 'Turn around. Go up to the door.', act: 1, go: 'mill' }]
+  }),
+  mill_wren: S => ({
+    plate: 'mill',
+    beats: [[
+      P('WREN', `Lyle. It's Wren. There's a man here that counts. He's all right. He aint hit nobody.`),
+      N(`A while goes by. Then the bar is drawn inside.`)
+    ]],
+    opts: [{ t: 'Go in.', act: 1, go: 'mill_in' }]
+  }),
+  mill_knock: S => ({
+    plate: 'mill',
+    beats: [[
+      N(`You knock and say you are the enumerator for the Commission and that you are alone and carry a book and nothing else.`),
+      P('A VOICE', `Go on away from here.`),
+      N(`You say you can go away and write what you like or he can open the door and have some say in it.`),
+      N(`A while goes by. Then the bar is drawn inside.`)
+    ]],
+    opts: [{ t: 'Go in.', act: 1, go: 'mill_in' }]
+  }),
+  mill_sneak: S => {
+    S.f.sawSleep = 1;
+    return {
+      plate: 'mill',
+      beats: [[
+        N(`You go round by the race, putting your feet where the stone is. There is a window at the back with the shutter hung by one hinge.`),
+        N(`He is not at the door. He is asleep on the grain sacks with his mouth open and a horse pistol lying on his chest going up and down. He is younger than you thought. He has taken his boots off and set them side by side.`),
+        V('dog', 0, `Nine days he's been listening for you and he slept through it. He's not what he thinks he is.`),
+        N(`You go back round to the front and knock.`)
+      ]],
+      opts: [{ t: 'Go in when he opens.', act: 1, go: 'mill_in' }]
+    };
+  },
+  mill_sneak_no: S => ({
+    plate: 'mill',
+    beats: [[
+      N(`You go round by the race. There is a slat lying in the weeds and you find it with your whole weight.`),
+      N(`The back door opens faster than you would have believed and there is the round cold mouth of a pistol against the bone behind your ear.`),
+      V('dog', 0, `That was me. I wanted to see.`),
+      P('A VOICE', `Who are you. Say it quick.`),
+      N(`You say it quick. The pistol stays where it is for a long breath and then it comes away.`)
+    ]],
+    opts: [{ t: 'Go in ahead of him.', act: 1, go: 'mill_in' }]
+  }),
+  mill_in: S => ({
+    plate: 'mill',
+    beats: [[
+      N(`He is twenty or near it. He has not shaved, and he has not had much need to. The pistol is an old cavalry piece and he holds it like a thing that was lent him.`),
+      P('THE MAN', `You write names.`),
+      N(`You say you do.`),
+      P('THE MAN', `Then write John Sorrel. Twenty-two. Millhand.`),
+      V('ledger', 0, `The mill has been shut since spring. He's a millhand at a shut mill. He hasnt thought it through to the end of the line.`)
+    ]],
+    opts: [
+      S.f.knowLyle ? { t: 'Your aunt says your name is Lyle.', go: 'mill_in2' } : { t: `That's not your name.`, go: 'mill_in2' },
+      { t: 'What happened in Ansel.', go: 'mill_in2' }
+    ]
+  }),
+  mill_in2: S => {
+    S.f.knowLyle = 1;
+    return {
+      plate: 'mill',
+      beats: [[
+        N(`He sits down on a grain sack. The pistol hangs between his knees.`),
+        S.f.wrenAlong ? P('WREN', `Granny Oake says eat the bread. Dont save it.`) : null,
+        S.f.wrenAlong ? P('LYLE', `I ate it.`) : null,
+        P('LYLE', `Lyle Pruett. A man named Coyle come at me behind the livery with a singletree and I had this. That's all of it.`),
+        N(`He looks at the floor.`),
+        P('LYLE', `He was owed money. By me. That's the rest of it.`)
+      ], [
+        P('LYLE', `They'll hang me in Ansel. Coyle's brother sits the grand jury. You write Pruett and Dace reads it and I'm in irons by dark.`),
+        P('LYLE', `You write Sorrel and I walk up that grade with forty dollars and a paper that says who I am.`),
+        P('LYLE', `Or you dont write nothing and I go out over the ridge tonight with what I got. Which is this. And it aint loaded. I shot it all at him.`),
+        V('dog', 2, `He just told you the gun is empty. He's a fool or he's done with threatening. I think he's a fool. I like him.`),
+        V('preacher', 2, `A man was killed. Somewhere there's a brother who would like that written down as well.`)
+      ]],
+      opts: STORY._lyleOpts(S)
+    };
+  },
+  _lyleOpts: S => {
+    const o = [];
+    o.push({ t: 'Write: Lyle Pruett, 20.', act: 1, do: S => { write(S, 'lyle', 'Lyle Pruett', 20, S.f.venue ? 'held for the circuit at Marlow' : 'wanted, Ansel Co.'); S.f.lyle = 'pruett'; }, go: 'mill_pruett' });
+    o.push({ t: 'Write: John Sorrel, 22.', act: 1, do: S => { write(S, 'lyle', 'John Sorrel', 22, 'millhand', false); S.f.lyle = 'sorrel'; }, go: 'mill_sorrel' });
+    o.push({ t: 'Write nothing. Tell him to be over the ridge by dark.', act: 1, do: S => { S.f.lyle = 'none'; }, go: 'mill_none' });
+    if (!S.f.heard) o.push({ t: 'Tell it again. Slower.', check: { id: 'lyle_ear', v: 'ear', dc: 9, mods: [['You saw him asleep with his boots set straight', 1, !!S.f.sawSleep]], pass: 'mill_ear', fail: 'mill_ear_no' } });
+    if (!S.f.venue) o.push({ t: 'Think what the law does with a man taken on State works.', act: 1, check: { id: 'venue', v: 'ledger', dc: 11, pass: 'mill_venue', fail: 'mill_venue_no' } });
+    return o;
+  },
+  mill_ear: S => {
+    S.f.heard = 1;
+    return {
+      plate: 'mill', beats: [[
+        N(`He tells it again. The livery. The singletree. He gets to the money sooner this time.`),
+        V('ear', 0, `He believes it. Every word. That's all I can give you. A man can believe a thing by the ninth day that wasnt so on the first.`)
+      ]], opts: STORY._lyleOpts(S)
+    };
+  },
+  mill_ear_no: S => {
+    S.f.heard = 1;
+    return {
+      plate: 'mill', beats: [[
+        N(`He tells it again. It comes out the same.`),
+        V('ear', 0, `I cant tell. He's too scared. Scared sounds like lying and it sounds like the truth.`)
+      ]], opts: STORY._lyleOpts(S)
+    };
+  },
+  mill_venue: S => {
+    S.f.venue = 1;
+    return {
+      plate: 'mill', beats: [[
+        V('ledger', 0, `Dace is State constabulary. This valley was condemned to the State in January. A man taken by State officers on State ground is bound over to the circuit court at Marlow. Not to the county. Not to Ansel.`),
+        N(`You tell him. He doesnt follow it the first time and you tell him again.`),
+        P('LYLE', `Marlow.`),
+        N(`You say there is no Coyle on any jury at Marlow. You say you cant tell him what twelve strangers will do with a singletree and a debt. It could be eight years. It could be the rope there too.`),
+        P('LYLE', `But it aint Ansel.`),
+        N(`It's not Ansel.`)
+      ]], opts: STORY._lyleOpts(S)
+    };
+  },
+  mill_venue_no: S => ({
+    plate: 'mill', beats: [[
+      V('ledger', 0, `There is something. Jurisdiction on condemned ground. I had it in the second valley and I have not got it now.`),
+      N(`He watches you think. Whatever he hoped to see cross your face does not.`)
+    ]], opts: STORY._lyleOpts(S)
+  }),
+  mill_pruett: S => ({
+    plate: 'mill',
+    beats: [[
+      ENTRY('lyle'),
+      N(`He doesnt raise the pistol. He looks at the page upside down as if he might read his way out of it.`),
+      S.f.venue ? P('LYLE', `Marlow. You'll tell Dace it's Marlow.`) : P('LYLE', `Aunt Hallie said you had a decent face.`),
+      S.f.venue ? N(`You say you will tell him, and that you will write it on the line so he cant forget he was told.`) : N(`You say nothing. There is nothing in the instructions for it.`),
+      S.f.wrenAlong ? P('WREN', `What's Dace going to do to him.`) : null,
+      S.f.wrenAlong ? N(`Nobody tells her.`) : null,
+      S.f.venue ? null : V('ledger', 2, `It's a true line. I'd ask you to remember that later. I dont think you will find it helps.`)
+    ]],
+    opts: [{ t: 'Go back down to the ferry.', act: 1, go: 'ferry_return' }]
+  }),
+  mill_sorrel: S => ({
+    plate: 'mill',
+    beats: [[
+      ENTRY('lyle'),
+      N(`You write it. John Sorrel. Twenty-two. Millhand. The pen makes the same sound it makes for anyone.`),
+      P('LYLE', `Does it look right.`),
+      N(`You tell him it looks like the others. That's the whole of the art.`),
+      P('LYLE', `John Sorrel.`),
+      N(`He says it twice more to himself. He is already getting used to answering to it.`),
+      V('dog', 2, `Dace knows this valley. He knows that mill has not turned since March. Be ready for him.`)
+    ]],
+    opts: [{ t: 'Go back down to the ferry.', act: 1, go: 'ferry_return' }]
+  }),
+  mill_none: S => ({
+    plate: 'mill',
+    beats: [[
+      N(`You cork the ink without wetting the pen.`),
+      P('LYLE', `That's all. You just dont.`),
+      N(`You tell him the constables come down the grade at dusk and they come by the road. The ridge behind the mill has no road on it.`),
+      V('ledger', 0, `One building not entered. I'll call it empty. I have called worse things empty.`)
+    ]],
+    opts: [
+      S.money >= 30 ? { t: 'Give him your voucher. Thirty dollars, payable to bearer.', act: 1, do: S => { S.money = 0; S.f.lyleVoucher = 1; }, go: 'mill_voucher' } : null,
+      { t: 'Go back down to the ferry.', act: 1, go: 'ferry_return' }
+    ].filter(Boolean)
+  }),
+  mill_voucher: S => ({
+    plate: 'mill',
+    beats: [[
+      N(`You hold out the voucher. He takes it and reads it with his lips.`),
+      P('LYLE', `Bearer.`),
+      N(`You tell him not to cash it in Corley and not in Ansel County.`),
+      P('LYLE', `Why would you do that.`),
+      N(`You dont have it worked out well enough to say.`)
+    ]],
+    opts: [{ t: 'Go back down to the ferry.', act: 1, go: 'ferry_return' }]
+  }),
+  mill_back: S => ({
+    plate: 'mill',
+    beats: [[N(`The door of the mill is shut. The plate is gone from the step.`)]],
+    opts: [{ t: 'Go back down to the ferry.', act: 1, go: 'ferry_return' }]
+  }),
+
+  /* ---------------- THE WORKS ---------------- */
+  dam_ask: S => {
+    const miss = [];
+    if (!S.f.done_church) miss.push('the churchyard');
+    if (!S.f.done_ferry) miss.push('the ferry');
+    return {
+      plate: 'valley',
+      beats: [[
+        N(`The road to the works goes up the east wall of the valley. From here you can see the table they have set out below the gatehouse, and a man standing at it.`),
+        miss.length ? V('ledger', 0, `You have not been to ${miss.join(' or ')}. A person not entered is not resident. That's the fourth instruction and they mean it.`) : null,
+        (!miss.length && !S.f.tarr) ? V('ledger', 0, `You left the ferryman's line neither written nor closed. If you go up now it stands as it is. He is not in the book.`) : null,
+        NOTE(`Once you go up, the book is closed to the valley.`)
+      ]],
+      opts: [{ t: 'Go up.', act: 1, do: S => { if (!S.f.tarr && S.f.done_ferry) S.f.tarr = 'off'; S.t = 5; }, go: 'dam' }, { t: 'Not yet.', act: 1, go: 'hub' }]
+    };
+  },
+  dam: S => ({
+    plate: 'dam',
+    beats: [[
+      N(`Up close the dam is not white. It is the grey of a wasp nest and streaked where the forms leaked, and low down where the concrete was wet men have written their names in it with nails.`),
+      N(`Below the gatehouse a table stands in the open with a cloth on it. A young man in a clean collar waits there with a watch open in his hand. A sergeant of constabulary sits a bay horse beside him. Four troopers stand smoking by a wagon.`),
+      S.f.wrenAlong ? N(`The girl has followed you all the way up with the ink. Nobody has told her not to. She stands by the mule.`) : null,
+      P('WHITLOW', `You're the enumerator. I had begun to worry. We lose the light at six-forty.`),
+      V('ear', 2, `He's not a bad man. He has a schedule and the schedule has him.`),
+      V('river', 2, `I am on the other side of that wall already, forty feet up it. I have been leaning on it since April. It's a good wall.`)
+    ]],
+    opts: [{ t: 'Open the book on the table.', act: 1, go: 'dam2' }]
+  }),
+  dam2: S => ({
+    plate: 'dam',
+    beats: [[
+      N(`You open the book on the cloth. ${count(S) === 1 ? 'One name' : count(S) + ' names'} down the page in your hand, and under ${count(S) === 1 ? 'it' : 'them'} the ruled lines running on empty to the foot.`),
+      !S.f.self ? N(`You have been in the valley since first light. You look at the next empty line.`) : null,
+      !S.f.self ? V('ledger', 0, `Enumerators are not enumerated. There is no rule against it. There has never needed to be one.`) : null
+    ]],
+    opts: [
+      !S.f.self ? { t: 'Write your own name on the next line.', act: 1, do: S => { write(S, 'self', 'your own name', '', 'enumerator'); S.f.self = 1; }, go: 'dam_self' } : null,
+      { t: 'Turn the book to face the sergeant.', act: 1, go: 'dam_read' }
+    ].filter(Boolean)
+  }),
+  dam_self: S => ({
+    plate: 'dam',
+    beats: [[
+      ENTRY('self'),
+      N(`You write it. It looks like any of the others.`),
+      P('WHITLOW', `Is that in order.`),
+      N(`Nobody answers him.`)
+    ]],
+    opts: [{ t: 'Turn the book to face the sergeant.', act: 1, go: 'dam_read' }]
+  }),
+  dam_read: S => {
+    const L = [];
+    L.push(N(`The sergeant gets down off the horse. He reads standing, slowly, with his finger under the line. He is a man who came to reading late and respects it.`));
+    if (S.f.self) L.push(P('DACE', `You wrote yourself.`), N(`You say you were here.`), P('DACE', `So was my horse.`), N(`He lets it stand. It's your forty dollars and your neck.`));
+    const n = lies(S);
+    if (S.f.lyle === 'pruett') {
+      L.push(P('DACE', `Pruett. There's paper on a Pruett out of Ansel.`));
+      if (S.f.venue) L.push(N(`You tell him the man was found on condemned ground and is taken by State officers. He is bound to the circuit at Marlow. You put your finger on the line where you wrote it.`), P('DACE', `I know the law.`), N(`He reads the line again.`), P('DACE', `I had forgot it. But I know it.`));
+      else L.push(N(`He says two names to the troopers and they put out their cigarettes.`));
+    }
+    if (n === 0) {
+      L.push(P('DACE', `It's a clean book.`), N(`He signs under your count and blots it with his sleeve.`));
+      S.f.inspect = 'clean';
+      return { plate: 'dam', beats: [L], opts: [{ t: 'Sign it.', act: 1, go: 'dam_signed' }] };
+    }
+    // challenge on the most visible falsehood
+    let q;
+    if (S.f.lyle === 'sorrel') q = [P('DACE', `John Sorrel. Millhand.`), N(`He looks across the valley to where the mill is.`), P('DACE', `That wheel aint turned since March.`)];
+    else if (S.f.odile === 'wrote') q = [P('DACE', `Thomas Vance. Four.`), N(`He keeps his finger on it.`), P('DACE', `I carried the fever returns out of this valley in March. There was a Vance on it.`)];
+    else if (S.f.tarr === 'off') q = [N(`He goes down the page and then goes down it again.`), P('DACE', `I dont see Abel Tarr.`)];
+    else q = [P('DACE', `Wren Oake. Hallie Oake never had a child. I've known her thirty years.`)];
+    L.push(...q);
+    L.push(N(`He looks at you. The engineer looks at his watch.`));
+    const mods = [['The engineer wants his gates shut', 1, true]];
+    const dc = 8 + n;
+    return {
+      plate: 'dam', beats: [L],
+      opts: [
+        { t: 'The book is the count. Sign it or ride down and make your own before six-forty.', check: { id: 'dace_pr', v: 'preacher', dc, red: 1, mods, pass: 'dam_pass', fail: 'dam_fail' } },
+        { t: `Section two. The Enumerator's entry is conclusive as to residence. You may dispute it in writing, at the capital.`, check: { id: 'dace_le', v: 'ledger', dc, red: 1, mods, pass: 'dam_pass', fail: 'dam_fail' } },
+        { t: 'Say nothing. Hand him the pen.', act: 1, go: 'dam_confess' }
+      ]
+    };
+  },
+  dam_pass: S => {
+    S.f.inspect = 'pass';
+    return {
+      plate: 'dam',
+      beats: [[
+        N(`He doesnt answer straight off. He looks at you the way a man looks at a horse he is not going to buy.`),
+        P('DACE', `I been a sergeant nineteen years. I know what a clean book looks like and I know what this is.`),
+        N(`He takes the pen and signs under your count.`),
+        P('DACE', `I aint riding down there to learn which of us is right. Not for the Commission. They dont pay me to know.`),
+        V('ledger', 0, `It's entered. It's the record now. Whatever was so before, this is what was so.`)
+      ]],
+      opts: [{ t: 'Sign it.', act: 1, go: 'dam_signed' }]
+    };
+  },
+  _strike: S => {
+    const st = k => { const e = S.book.find(e => e.key === k); if (e) e.struck = true; };
+    if (S.f.lyle === 'sorrel') { st('lyle'); S.f.lyle = 'fled'; }
+    if (S.f.odile === 'wrote') { st('thomas'); S.f.odile = 'struck'; }
+    if (S.f.tarr === 'off') { write(S, 'tarr', 'Abel Tarr', 70, 'entered by Sgt. Dace'); S.f.tarr = 'dragged'; }
+    if (S.f.wren === 'oake') { const e = S.book.find(e => e.key === 'wren'); e.name = 'Wren Tolliver'; e.note = 'corrected by Sgt. Dace'; e.truth = true; S.f.wren = 'corrected'; }
+  },
+  dam_fail: S => {
+    if (S.f.inspect !== 'fail') { S.f.inspect = 'fail'; S.f.was = { lyle: S.f.lyle, odile: S.f.odile, tarr: S.f.tarr, wren: S.f.wren }; STORY._strike(S); }
+    const w = S.f.was;
+    return {
+      plate: 'dam',
+      beats: [[
+        N(`He hears you out. Then he takes the pen out of your hand. It is done gently.`),
+        P('DACE', `I rode this valley before you ever seen it.`),
+        w.lyle === 'sorrel' ? N(`He draws a line through John Sorrel and sends two troopers down to the mill at a trot.`) : null,
+        w.odile === 'wrote' ? N(`He draws a line through Thomas Vance. He does that one slowly and he doesnt look up after.`) : null,
+        w.tarr === 'off' ? N(`He writes Abel Tarr at the foot of the page in a square hand like a child's.`) : null,
+        w.wren === 'oake' ? N(`He strikes Oake and writes Tolliver above it.${S.f.wrenAlong ? ' The girl is watching him do it. He knows she is.' : ''}`) : null,
+        P('DACE', `Now it's a clean book.`),
+        V('preacher', 0, `It's a true one. I have always said those were the same. I'm not sure now who I said it to.`)
+      ]],
+      opts: [{ t: 'Sign it.', act: 1, go: 'dam_signed' }]
+    };
+  },
+  dam_confess: S => {
+    if (S.f.inspect !== 'confess') { S.f.inspect = 'confess'; S.f.was = { lyle: S.f.lyle, odile: S.f.odile, tarr: S.f.tarr, wren: S.f.wren }; STORY._strike(S); }
+    const w = S.f.was;
+    return {
+      plate: 'dam',
+      beats: [[
+        N(`You hold the pen out to him. He looks at it and then he takes it.`),
+        w.lyle === 'sorrel' ? N(`He draws a line through John Sorrel and sends two troopers down to the mill at a trot.`) : null,
+        w.odile === 'wrote' ? N(`He draws a line through Thomas Vance. He does that one slowly.`) : null,
+        w.tarr === 'off' ? N(`He writes Abel Tarr at the foot of the page in a square hand like a child's.`) : null,
+        w.wren === 'oake' ? N(`He strikes Oake and writes Tolliver above it.`) : null,
+        P('DACE', `What did you figure to do. Walk it past me.`),
+        N(`You say you had not decided.`),
+        P('DACE', `Well. Now you aint got to.`)
+      ]],
+      opts: [{ t: 'Sign it.', act: 1, go: 'dam_signed' }]
+    };
+  },
+  dam_signed: S => {
+    const c = count(S);
+    return {
+      plate: 'dam',
+      beats: [[
+        N(`You sign under the sergeant. The engineer turns the book around and reads the one figure in it he needs.`),
+        P('WHITLOW', `${['None', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][c]}. ${c === 1 ? 'Forty dollars' : c * 40 + ' dollars'}. I had budgeted for nine.`),
+        N(`He seems pleased. He closes the book and puts it in a tin box with a lock and the box under his arm.`),
+        N(`The sergeant mounts. The wagon goes down the grade with the troopers walking behind it, and the light goes down the valley ahead of them.`)
+      ]],
+      opts: [{ t: 'Watch them go down.', act: 1, go: 'removal' }]
+    };
+  },
+  removal: S => {
+    const L = [];
+    L.push(N(`From the works you can see all of it, small. The wagon stops at the store. A crate is handed up, and a woman, and she sits on the crate.`));
+    if (S.f.wren === 'oake') L.push(N(`${S.f.wrenAlong ? 'The girl goes down the road at a run with the ink still in her hands and is lifted up beside her.' : 'A child is lifted up beside her.'}`));
+    else L.push(N(`${S.f.wrenAlong ? 'A trooper comes back up the road for the girl. She gives you the ink. She has not spilled any.' : 'A child is lifted up, and set on the other bench, by the trooper.'}`));
+    if (S.f.tarr === 'walk') L.push(N(`At the river a man comes up from the ferry on foot with something wrapped under his arm. The wagon waits for him. He doesnt hurry and he doesnt get in. He walks behind.`));
+    else if (S.f.tarr === 'wrote' || S.f.tarr === 'dragged') L.push(N(`At the river four men go down to the ferry house and they are in it some time. They come out carrying a chair with a man in it. From here it looks like a courtesy.`));
+    else if (S.f.tarr === 'off') L.push(N(`The wagon doesnt stop at the river. There is nobody on the book there. On the porch of the ferry house you can make out a chair, and you cant make out whether there is anyone in it, and you know.`));
+    if (S.f.was && S.f.was.lyle === 'sorrel') L.push(N(`Across the river two troopers stand at the door of the mill. One of them picks something up off the step and looks at it and sets it down. They come back alone.`));
+    else if (S.f.lyle === 'pruett') L.push(N(`The scow crosses once more with two troopers on it and comes back with three men. The one in the middle has his hands in front of him.`));
+    L.push(N(`On the rise a woman stands by the church with a shovel. The wagon waits for her too.`));
+    return {
+      plate: 'dam',
+      beats: [L, [
+        N(`At six-forty the engineer shuts his watch and lifts his hand to someone in the gatehouse.`),
+        N(`It makes no sound you can hear. Below the dam the river goes on a little while out of habit. Then it thins on the stones and stops being a river.`)
+      ]],
+      opts: [{ t: 'Stay on the grade until dark.', act: 1, go: 'after' }]
+    };
+  },
+
+  /* ---------------- AFTER ---------------- */
+  after: S => {
+    const A = [], B = [], C = [];
+    A.push(N(`This is what became of them, so far as it was ever written.`));
+    A.push(N(`Hallie Oake went to her sister's kitchen in Corley and was told where things were kept. She lived eleven years.`));
+    if (S.f.wren === 'oake') A.push(N(`Wren Oake went with her and nobody looked at her twice. She learned to read off the newspapers the lamp chimneys were wrapped in.`));
+    else A.push(N(`Wren Tolliver was carried to the county home at Ansel on a Sunday. Hallie Oake wrote to her each month. It is not known if the letters were given her. At fourteen she walked out of the place and nobody wrote that down either.`));
+
+    if (S.f.odile === 'wrote') B.push(N(`The Commission paid forty dollars for Thomas Vance, aged four, resident. The carter took thirty. There is a stone at Corley with his name cut in it and the dates are right.`));
+    else if (S.f.odile === 'cert') B.push(N(`The Commission moved the grave of Thomas Vance at its own charge under section fourteen. Two men and a wagon. They were careful with the box. His mother had not expected them to be and she watched them the whole way.`));
+    else if (S.f.odile === 'voucher') B.push(N(`The carter at Corley took a Commission voucher for thirty dollars and asked nothing about it. Thomas Vance lies on the hill above the waterline. There was no money over for a stone. His mother knows the place.`));
+    else if (S.f.done_church) B.push(N(`Odile Vance carried the box up the grade on her back in the night. It took her until morning. She buried him above the waterline in ground she did not own, with no stone, and told no one where.`));
+    else B.push(N(`You never went up to the churchyard. A woman was taken from it at dusk by the troopers. What she left in the ground there is under ninety feet of water.`));
+
+    if (S.f.tarr === 'walk') B.push(N(`Abel Tarr walked up the grade on his own feet with the ferry bell under his arm. In Corley he would tell anyone who sat still where the crossing had been and what the ice did in nineteen and four. Children were sent to him. He lived six years.`));
+    else if (S.f.tarr === 'wrote') B.push(N(`Abel Tarr was carried up the grade in his chair. He did not fight them. He lived two winters in a room in Corley with a window that looked on a wall, and he never spoke of the river.`));
+    else if (S.f.tarr === 'dragged') B.push(N(`Abel Tarr was carried up the grade in his chair. He had been told he was not in the book. He lived two winters in a room in Corley and asked the woman who kept the house what your name was. She did not know it.`));
+    else if (S.f.tarr === 'off') B.push(N(`Abel Tarr was not in the book. The water came into his yard on the second evening and to the porch boards on the third morning. Nobody saw the rest. In October a chair was found against the face of the dam.`));
+    else B.push(N(`You never went down to the ferry. The man who kept it was not in the book. The water came to his porch on the third morning.`));
+
+    if (S.f.lyle === 'pruett' && S.f.venue) C.push(N(`Lyle Pruett was tried at Marlow in October. The jury was out two days. He was given eight years. When he came out the lake was there and he stood on the dam and looked at it and then went to find work.`));
+    else if (S.f.lyle === 'pruett') C.push(N(`Lyle Pruett was given over to the sheriff of Ansel County. He was hanged in November. Coyle's brother was present. Hallie Oake was told after.`));
+    else if (S.f.lyle === 'sorrel') C.push(N(`John Sorrel drew forty dollars at the pay table in Corley and signed for it in a hand that had practised. The next spring a man was shot dead in a town called Varney over a debt. The name given was neither Sorrel nor Pruett. You read the notice twice.`));
+    else if (S.f.lyle === 'none' || S.f.lyle === 'fled') C.push(N(`The man at the mill went out over the ridge in the dark with an empty pistol${S.f.lyleVoucher ? ' and a voucher for thirty dollars' : ''}. There is no record of him after. That is what he asked for.`));
+    else C.push(N(`You did not go up to the mill. Whoever was in it was there when the water came or he was not. The book is silent on it and so are you.`));
+
+    if (S.f.self) C.push(N(`The Commission paid forty dollars to a man for being in a valley on the day it ended.${S.money ? '' : ' It was eleven dollars over his wage.'}`));
+    else if (S.money) C.push(N(`You cashed your voucher at Corley. Thirty dollars. You bought a set of shoes for the mule and nails to go with them.`));
+    else C.push(N(`You counted Tenmile for nothing. It's the one valley of the five you can still see with your eyes shut.`));
+
+    const c = count(S);
+    C.push(FORM(`TENMILE. SOULS ENUMERATED: ${c}.\nREMOVAL ALLOWANCE PAID: $${c * 40}.\nVALLEY CERTIFIED VACANT.`));
+    return { plate: 'night', beats: [A, B, C], opts: [{ t: 'Look at the water.', act: 1, go: 'last' }] };
+  },
+  last: S => {
+    const rank = k => S.v[k] * 10 + (k === S.f.pick1 ? 2 : k === S.f.pick2 ? 1 : 0);
+    const top = Object.keys(VOICES).sort((a, b) => rank(b) - rank(a))[0];
+    const close = {
+      ledger: `Forty dollars a soul. I have gone over the figure. It's not the right price. There isnt one. That's why they needed a man to write it.`,
+      hand: S.f.shoe === 'ok' ? `The shoe's holding. Corley by noon if you start now. There's another valley in the spring and you'll want your hands for it.` : `That shoe wont see Corley. Get down and do it right this time. I'll show you. It's not too dark for hands.`,
+      ear: `Listen. No. There's nothing. That's the sound of all of them gone. You've heard it four times before and called it quiet.`,
+      dog: `Nobody's watching us now. First time all day. Go on.`,
+      preacher: `I had something ready to say over it. I find I dont want to say it.`,
+      river: `I'll keep it. The floors she swept. The cable. The hole in the churchyard. I keep everything that's given me. I only dont know that I do.`
+    }[top];
+    return {
+      plate: 'night',
+      beats: [[
+        N(`You sit on the grade with the mule through the first of the dark. The water comes up the valley the way a shadow does. You cant see it move and each time you look it has.`),
+        N(`It takes the mud first, and the bird tracks. Then the landing. Then the bottom of the street. It goes in at the open doors.`),
+        S.f.tarr === 'off' ? N(`There is a light on the porch of the ferry house. Somebody has lit a lamp to see it by.`) : null
+      ], [
+        N(`By midnight the moon is in it. There are roofs yet, and the church on its rise, and they stand in a thing that was not there when you came down this morning with a book.`),
+        N(`${['None', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][count(S)]} in the ledger. The Commission will call that the number of people who lived at Tenmile. You were the one who stood in it. You know what the figure leaves out and you are the only one who ever will.`),
+        { k: 'v', v: top, min: 0, t: close },
+        N(`The mule gets up when it is ready. You go with it.`)
+      ]],
+      opts: [{ t: 'The end.', act: 1, silent: 1, go: 'fin' }]
+    };
+  },
+  fin: S => ({
+    plate: 'night',
+    fin: true,
+    beats: [[]],
+    opts: []
+  })
+};
+
+/* TENMILE — engine */
+(function () {
+  const $ = s => document.querySelector(s);
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/'/g, '’');
+  const SAVE = 'tenmile.save.v1';
+  let S = null, busy = false, curPlate = null, curPlateKey = '';
+
+  function fresh() { return { v: { ledger: 1, hand: 1, ear: 1, dog: 1, preacher: 1, river: 1 }, f: {}, book: [], money: 30, t: 0, node: 'grade', tried: {} }; }
+  function save() { try { localStorage.setItem(SAVE, JSON.stringify(S)); } catch (e) { } }
+  function load() { try { const s = JSON.parse(localStorage.getItem(SAVE) || 'null'); return s && s.node && s.v ? s : null; } catch (e) { return null; } }
+  function clearSave() { try { localStorage.removeItem(SAVE); } catch (e) { } }
+
+  /* ---------- sound ---------- */
+  const A = { ctx: null, on: true, master: null, wind: null, water: null };
+  function audioStart() {
+    if (A.ctx || !A.on) return;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    try {
+      const c = A.ctx = new AC();
+      A.master = c.createGain(); A.master.gain.value = 0; A.master.connect(c.destination);
+      A.master.gain.linearRampToValueAtTime(.9, c.currentTime + 3);
+      const len = c.sampleRate * 4, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      let last = 0; for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + .02 * w) / 1.02; d[i] = last * 3.2; }
+      const mk = (freq, q, type) => { const s = c.createBufferSource(); s.buffer = buf; s.loop = true; const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q; const g = c.createGain(); g.gain.value = 0; s.connect(f); f.connect(g); g.connect(A.master); s.start(); return { f, g }; };
+      A.wind = mk(420, .6, 'bandpass'); A.water = mk(900, .3, 'lowpass');
+      const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = .07; lg.gain.value = 170; lfo.connect(lg); lg.connect(A.wind.f.frequency); lfo.start();
+      A.wind.g.gain.value = .16;
+      A.buf = buf;
+      setTimeout(tone, 5000);
+      setAmb(curPlate);
+    } catch (e) { A.ctx = null; }
+  }
+  const SCALE = [73.42, 110, 146.83, 174.61, 220, 261.63, 293.66];
+  function tone() {
+    if (!A.ctx) return;
+    if (A.on && A.ctx.state === 'running') {
+      const c = A.ctx, t = c.currentTime, f = SCALE[Math.floor(Math.random() * SCALE.length)];
+      const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.05, t + 2.2); g.gain.exponentialRampToValueAtTime(.0005, t + 9);
+      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+      [0, 3].forEach(det => { const o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = f; o.detune.value = det ? 7 : -5; o.connect(lp); o.start(t); o.stop(t + 9.2); });
+      lp.connect(g); g.connect(A.master);
+    }
+    setTimeout(tone, 9000 + Math.random() * 12000);
+  }
+  function setAmb(plate) {
+    if (!A.ctx) return;
+    const t = A.ctx.currentTime;
+    const w = { ferry: .2, night: .26, dam: .1, valley: .03 }[plate] || 0;
+    const wi = { night: .09, store: .1, mill: .12 }[plate] || .16;
+    A.water.g.gain.setTargetAtTime(w, t, 1.5); A.wind.g.gain.setTargetAtTime(wi, t, 1.5);
+  }
+  function blip(kind) {
+    if (!A.ctx || !A.on || A.ctx.state !== 'running') return;
+    const c = A.ctx, t = c.currentTime;
+    if (kind === 'pen') {
+      for (let i = 0; i < 9; i++) {
+        const s = c.createBufferSource(); s.buffer = A.buf; const f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 1800 + Math.random() * 1500;
+        const g = c.createGain(); const t0 = t + .25 + i * .15 + Math.random() * .05, dur = .07 + Math.random() * .08;
+        g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.5, t0 + .02); g.gain.linearRampToValueAtTime(0, t0 + dur);
+        s.connect(f); f.connect(g); g.connect(A.master); s.start(t0, Math.random() * 3); s.stop(t0 + dur + .02);
+      }
+    } else {
+      const n = kind === 'dice' ? 5 : 1;
+      for (let i = 0; i < n; i++) {
+        const o = c.createOscillator(), g = c.createGain(); const t0 = t + i * .13 + Math.random() * .03;
+        o.type = 'square'; o.frequency.setValueAtTime(kind === 'dice' ? 900 + Math.random() * 700 : 420, t0); o.frequency.exponentialRampToValueAtTime(120, t0 + .05);
+        g.gain.setValueAtTime(kind === 'dice' ? .05 : .025, t0); g.gain.exponentialRampToValueAtTime(.0005, t0 + .06);
+        o.connect(g); g.connect(A.master); o.start(t0); o.stop(t0 + .08);
+      }
+    }
+  }
+  function setSound(on) {
+    A.on = on; $('#b-sound').textContent = on ? 'Sound on' : 'Sound off';
+    try { localStorage.setItem('tenmile.sound', on ? '1' : '0'); } catch (e) { }
+    if (on) { audioStart(); if (A.ctx) { A.ctx.resume(); } } else if (A.ctx) A.ctx.suspend();
+  }
+
+  /* ---------- plate & book ---------- */
+  function setPlate(id) {
+    const key = id + '|' + S.t + '|' + (S.f.knowMill ? 1 : 0);
+    if (key === curPlateKey) return;
+    const fig = $('#plate'), holder = $('#plate-svg');
+    const first = !curPlateKey; curPlateKey = key; curPlate = id;
+    const put = () => { holder.innerHTML = plateSVG(id, S); fig.classList.remove('swap'); };
+    if (first) put(); else { fig.classList.add('swap'); setTimeout(put, 460); }
+    setAmb(id);
+  }
+  function bookHTML() {
+    const n = S.book.filter(e => !e.struck).length;
+    let rows = S.book.map((e, i) => `<li class="${e.struck ? 'struck' : ''}"><span class="no">${i + 1}</span><span class="nm">${esc(e.name)}<small>${esc(e.note)}</small></span><span class="ag">${e.age}</span></li>`).join('');
+    for (let i = S.book.length; i < Math.max(7, S.book.length + 1); i++) rows += `<li class="blank"><span class="no">${i + 1}</span><span class="nm"></span><span class="ag"></span></li>`;
+    return `<div class="book-inner"><div class="book-head"><span>Schedule C · Souls</span><span>Name</span><span>Age</span></div><ol class="book-rows">${rows}</ol>
+    <div class="book-foot"><span>Entered: <b>${n}</b></span><span>Allowance: <b>$${n * 40}</b></span><span>Your voucher: <b>${S.money ? '$30' : 'given'}</b></span></div></div>`;
+  }
+  function refresh() {
+    $('#book').innerHTML = bookHTML();
+    const n = S.book.filter(e => !e.struck).length;
+    $('#clock').textContent = TIMES[Math.min(S.t, 5)] + ' · ' + n + (n === 1 ? ' soul' : ' souls') + ' entered';
+    $('#b-book').textContent = 'Book (' + n + ')';
+  }
+
+  /* ---------- the log ---------- */
+  const log = () => $('#log'), scroller = () => $('#right');
+  function scrollToNew(firstNew) {
+    if (!firstNew) return;
+    requestAnimationFrame(() => {
+      const sc = scroller();
+      const top = firstNew.offsetTop - 26;
+      const bottomOfContent = log().lastElementChild.offsetTop + log().lastElementChild.offsetHeight;
+      const fits = bottomOfContent - top < sc.clientHeight - 30;
+      const target = fits ? Math.max(0, bottomOfContent - sc.clientHeight + 40) : top;
+      if (target > sc.scrollTop) sc.scrollTo({ top: target, behavior: 'smooth' });
+    });
+  }
+  function lineEl(L) {
+    if (!L) return null;
+    if (L.k === 'n') return el('p', 'ln-n', esc(L.t));
+    if (L.k === 'p') return el('p', 'ln-p', `<span class="who">${esc(L.who)}</span>${esc(L.t)}`);
+    if (L.k === 'v') { if (S.v[L.v] < L.min) return null; return el('div', 'ln-v v-' + L.v, `<span class="who">${esc(VOICES[L.v].name)}</span><span class="txt">${esc(L.t)}</span>`); }
+    if (L.k === 'form') return el('div', 'ln-form', esc(L.t));
+    if (L.k === 'note') return el('p', 'ln-note', esc(L.t));
+    if (L.k === 'entry') { const e = S.book.find(e => e.key === L.key); if (!e) return null; blip('pen'); return el('div', 'ln-entry', `<span class="nm"><span class="wr">${esc(e.name)}<small>${esc(e.note)}</small></span></span><span class="ag"><span class="wr">${e.age}</span></span>`); }
+    return null;
+  }
+  function trim() { const l = log(); while (l.children.length > 140) l.removeChild(l.firstChild); }
+
+  function render(nd) {
+    setPlate(nd.plate); refresh();
+    if (nd.fin) return fin();
+    const beats = nd.beats.map(b => b.map(lineEl).filter(Boolean)).filter(b => b.length);
+    let i = 0;
+    const step = () => {
+      const b = beats[i++]; let first = null;
+      if (b) b.forEach((e, k) => { e.style.animationDelay = (k * 110) + 'ms'; log().appendChild(e); if (!first) first = e; });
+      if (i < beats.length) {
+        const c = el('div', 'cont'); const btn = el('button', '', 'Go on'); c.appendChild(btn); c.style.animationDelay = ((b ? b.length : 0) * 110 + 100) + 'ms';
+        btn.onclick = () => { blip('tap'); c.remove(); step(); };
+        log().appendChild(c); scrollToNew(first || c);
+      } else {
+        const o = optsEl(nd.opts); o.style.animationDelay = ((b ? b.length : 0) * 110 + 100) + 'ms';
+        log().appendChild(o); scrollToNew(first || o);
+      }
+    };
+    step(); trim();
+  }
+
+  function mods(ch) { return (ch.mods || []).filter(m => m[2]); }
+  function odds(ch) {
+    const bonus = S.v[ch.v] + mods(ch).reduce((a, m) => a + m[1], 0); let w = 0;
+    for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) { if (a + b === 12 || (a + b !== 2 && a + b + bonus >= ch.dc)) w++; }
+    return Math.round(w / 36 * 100);
+  }
+  const diffWord = dc => dc <= 8 ? 'Plain' : dc <= 10 ? 'Uncertain' : dc <= 12 ? 'Hard' : 'Long odds';
+
+  function optsEl(opts) {
+    const ol = el('ol', 'opts');
+    opts.filter(Boolean).forEach(o => {
+      const ch = o.check; let spent = false;
+      if (ch) {
+        const tr = S.tried[ch.id];
+        if (tr != null) { if (ch.red || tr === 'won') return; if (S.v[ch.v] <= tr) spent = true; }
+      }
+      const li = el('li', spent ? 'spent' : ''); const b = el('button');
+      let h = `<span class="${o.act ? 'o-act' : ''}">${o.vc ? `<span class="who v-${o.vc}" style="font-style:normal">${esc(o.t)}</span>` : esc(o.t)}${o.tag ? `<span class="o-tag">${esc(o.tag)}</span>` : ''}`;
+      if (o.sub) h += `<span class="o-sub">${esc(o.sub)}</span>`;
+      if (ch) {
+        h += `<span class="o-chk v-${ch.v}">${esc(VOICES[ch.v].name)} ${S.v[ch.v]} · ${diffWord(ch.dc)} ${ch.dc} · ${spent ? 'tried. A louder voice might try again' : odds(ch) + ' in 100'}${ch.red && !spent ? ' · <span class="red">one throw only</span>' : ''}</span>`;
+        mods(ch).forEach(m => { h += `<span class="o-mod">+${m[1]} ${esc(m[0])}</span>`; });
+      }
+      h += '</span>';
+      b.innerHTML = h;
+      if (!spent) b.onclick = () => choose(o, ol);
+      li.appendChild(b); ol.appendChild(li);
+    });
+    return ol;
+  }
+
+  function choose(o, ol) {
+    if (busy) return; busy = true; audioStart(); blip('tap');
+    ol.remove();
+    let echo = null;
+    if (!o.silent) { echo = o.act ? el('p', 'ln-you act', esc(o.t)) : el('p', 'ln-you', `<span class="who">You</span>${esc(o.t)}`); log().appendChild(echo); }
+    if (o.do) o.do(S);
+    if (o.check) return roll(o.check, echo);
+    busy = false; go(o.go, true);
+  }
+
+  function pips(n) { const map = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] }[n]; let h = ''; for (let i = 0; i < 9; i++) h += `<i class="${map.includes(i) ? 'on' : ''}"></i>`; return h; }
+  function roll(ch, echo) {
+    const a = 1 + Math.floor(Math.random() * 6), b = 1 + Math.floor(Math.random() * 6);
+    const ms = mods(ch), mb = ms.reduce((x, m) => x + m[1], 0), lvl = S.v[ch.v], tot = a + b + lvl + mb;
+    const ok = a + b === 12 || (a + b !== 2 && tot >= ch.dc);
+    S.tried[ch.id] = ok ? 'won' : (ch.red ? 'red' : lvl);
+    const box = el('div', 'roll rolling v-' + ch.v, `<div class="dice"><div class="die">${pips(3)}</div><div class="die">${pips(5)}</div></div><div class="sum"><b>${esc(VOICES[ch.v].name)}</b><br>against ${ch.dc}</div><div class="res"></div>`);
+    log().appendChild(box); scrollToNew(echo || box); blip('dice');
+    const dice = box.querySelectorAll('.die');
+    const iv = setInterval(() => { dice[0].innerHTML = pips(1 + Math.floor(Math.random() * 6)); dice[1].innerHTML = pips(1 + Math.floor(Math.random() * 6)); }, 90);
+    setTimeout(() => {
+      clearInterval(iv); box.classList.remove('rolling'); dice[0].innerHTML = pips(a); dice[1].innerHTML = pips(b);
+      box.querySelector('.sum').innerHTML = `<b>${esc(VOICES[ch.v].name)}</b> ${lvl}${mb ? ' + ' + mb : ''} + dice ${a + b} = <b>${tot}</b><br>against ${ch.dc}`;
+      const r = box.querySelector('.res'); r.className = 'res ' + (ok ? 'pass' : 'fail');
+      r.textContent = a + b === 12 ? 'Two sixes. It holds.' : a + b === 2 ? 'Two ones. It fails.' : ok ? 'It holds.' : 'It fails.';
+      setTimeout(() => { busy = false; go(ok ? ch.pass : ch.fail, false); }, 900);
+    }, 850);
+  }
+
+  function go(id, sep) {
+    S.node = id;
+    const nd = STORY[id](S);
+    save();
+    render(nd);
+  }
+
+  function fin() {
+    clearSave();
+    const n = S.book.filter(e => !e.struck).length;
+    const d = el('div', 'fin', `<hr class="sep"><h3>Tenmile</h3><p>${n} entered · $${n * 40} paid · valley certified vacant</p><p>The people of the valley could have fared otherwise. The book was yours.</p>`);
+    const b = el('button', '', 'Come down the grade again'); b.onclick = () => begin(true); d.appendChild(b);
+    log().appendChild(d); scrollToNew(d);
+  }
+
+  /* ---------- sheets ---------- */
+  function sheet(html) {
+    const sh = $('#sheet'); sh.querySelector('.card').innerHTML = html + '<div class="row-btns"><button class="close" id="sh-close">Close</button></div>'; sh.hidden = false;
+    $('#sh-close').onclick = () => { sh.hidden = true; };
+    return sh;
+  }
+  function voicesSheet() {
+    let h = '<h2>The Voices</h2>';
+    Object.keys(VOICES).forEach(k => { h += `<div class="vrow v-${k}"><span class="nm">${VOICES[k].name}</span><span class="pips">${'●'.repeat(S.v[k])}${'○'.repeat(Math.max(0, 5 - S.v[k]))}</span><span class="gl">${esc(VOICES[k].gloss)}</span></div>`; });
+    h += `<div class="howto" style="margin-top:14px"><p>When you lean on a voice it throws two dice and adds its number. Meet the figure and it holds. Two sixes always hold. Two ones never do.</p><p>Some throws can be tried again when the voice has grown. Some can be thrown only once.</p></div>`;
+    sheet(h);
+  }
+  function bookSheet() { sheet('<h2>The Book</h2><div id="book2">' + bookHTML() + '</div>'); }
+  function menuSheet() {
+    const sh = sheet(`<h2>Tenmile</h2><div class="howto"><p>You are the Commission's enumerator. Count the valley before dusk. Tap a line to say it or do it. Your place is kept on this device.</p></div>`);
+    const row = sh.querySelector('.row-btns');
+    const r = el('button', 'close', 'Start over'); let armed = false;
+    r.onclick = () => { if (!armed) { armed = true; r.textContent = 'Tap again to burn the book'; return; } sh.hidden = true; begin(true); };
+    row.appendChild(r);
+  }
+
+  /* ---------- boot ---------- */
+  function begin(newGame) {
+    if (newGame || !S) { S = fresh(); clearSave(); }
+    log().innerHTML = ''; scroller().scrollTop = 0; curPlateKey = ''; busy = false;
+    const t = $('#title'); t.classList.add('gone'); setTimeout(() => { t.hidden = true; t.querySelector('.tplate').innerHTML = ''; }, 950);
+    $('#plate-svg').innerHTML = '';
+    go(S.node);
+  }
+  function start(hot) {
+    let sOn = true; try { sOn = localStorage.getItem('tenmile.sound') !== '0'; } catch (e) { }
+    A.on = sOn; $('#b-sound').textContent = sOn ? 'Sound on' : 'Sound off';
+    $('#b-sound').onclick = () => setSound(!A.on);
+    $('#b-voices').onclick = voicesSheet; $('#b-book').onclick = bookSheet; $('#b-menu').onclick = menuSheet;
+    $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') e.target.hidden = true; });
+    $('#plate').addEventListener('click', e => {
+      const m = e.target.closest && e.target.closest('.mk'); if (!m || busy || !S || S.node !== 'hub') return;
+      const map = { store: /store/i, church: /churchyard/i, ferry: /^The ferry/i, dam: /works/i };
+      const loc = m.getAttribute('data-loc'); const btns = [...document.querySelectorAll('#log .opts:last-of-type button')];
+      const b = btns.find(b => map[loc] && map[loc].test(b.textContent)); if (b) b.click();
+    });
+    const saved = (hot && hot.S) || load();
+    $('#title .tplate').innerHTML = plateSVG('valley', { t: 0, f: { bare: 1 } });
+    const bn = $('#t-new'), bc = $('#t-cont');
+    if (saved && saved.node !== 'grade' && saved.node !== 'fin') { bc.hidden = false; bc.onclick = () => { S = saved; audioStart(); begin(false); }; bn.textContent = 'Begin again'; bn.classList.remove('primary'); bc.classList.add('primary'); }
+    bn.onclick = () => { audioStart(); begin(true); };
+    document.addEventListener('visibilitychange', () => { if (!A.ctx) return; if (document.hidden) A.ctx.suspend(); else if (A.on) A.ctx.resume(); });
+    window.__tenmile = { get S() { return S; }, go };
+  }
+  try { window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({ S })); } catch (e) { }
+  if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start((window.claude && window.claude.hot && window.claude.hot.data) || {});
+})();
+
+</script>
